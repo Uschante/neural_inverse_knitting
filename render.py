@@ -4,7 +4,8 @@ import numpy as np
 import os
 import sys
 from PIL import Image
-from scipy.misc import imsave
+#from scipy.misc import imsave
+import imageio
 import pdb
 
 from model import rendnet
@@ -23,7 +24,8 @@ def read_image(fname):
     return img
 
 def save_image(fname, data):
-    imsave(fname, data)
+    #imsave(fname, data)
+    imageio.imwrite(fname, data)
 
 def main(argv):
 

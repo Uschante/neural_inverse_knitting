@@ -96,7 +96,7 @@ def load_weights(sess, render_type):
         os.path.dirname(__file__), 'renderer',
         render_weights + '.npy'
     )
-    var_data = np.load(model_file).item()
+    var_data = np.load(model_file, allow_pickle=True).item()
 
     # remap generator name to renderer
     var_data = {
