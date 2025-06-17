@@ -8,17 +8,36 @@ You can browse the dataset, results and more on the [project page](http://deepkn
 ## Installing dependencies
 Several scripts assume a Linux environment with Bash, though it may work on MacOS and/or Windows with CigWIN (but was not tested there).
 
-In general, you need python 3, with several dependencies that can easily be installed with `pip`:
+### Step 1: Create and activate a new conda environment
+
+Create a conda environment with Python 3.7.16
+
+```
+conda create --name neural_knitting python=3.7.16
+conda activate neural_knitting
+```
+
+### Step 2: Install Python package requirements
+
 
 ```
 pip install -r requirements.txt
 ```
 
-We suggest doing so in a fresh virtual environment:
+### Step 3: Install ImageMagick
+
 
 ```
-virtualenv -p python3 env
-. env/bin/activate
+conda install -c conda-forge imagemagick
+```
+
+### Step 4: Install CUDA Toolkit and cuDNN
+
+Use compatible versions with TensorFlow 1.15.0
+
+```
+conda install cudatoolkit=10.0
+conda install cudnn=7.3.1
 ```
 
 ## Downloading dependencies

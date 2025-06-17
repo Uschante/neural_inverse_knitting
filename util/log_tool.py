@@ -182,8 +182,10 @@ def _plot_confusion_matrix(cm, labels):
     """
 
     # attach a new canvas if not exists
-    if fig.canvas is None:
-        matplotlib.backends.backend_agg.FigureCanvasAgg(fig)
+    # if fig.canvas is None:
+    #     fig.set_canvas(matplotlib.backends.backend_agg.FigureCanvasAgg(fig))
+    # attach a new canvas anyway
+    fig.set_canvas(matplotlib.backends.backend_agg.FigureCanvasAgg(fig))
 
     def fig2rgb_array(fig):
         fig.canvas.draw()
