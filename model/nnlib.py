@@ -10,6 +10,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import tensorflow as tf
 from contextlib import contextmanager
 import re
+
+import tf_slim as slim
+
 """ helper functions """
 
 
@@ -104,13 +107,13 @@ def loss_huber(labels, predictions, delta=1.0):
 
 
 def avgpool(h, s=2, k=2):
-    h = tf.contrib.layers.avg_pool2d(
+    h = slim.avg_pool2d(
         h, kernel_size=k, stride=s, padding='VALID')
     return h
 
 
 def maxpool(h, s=2, k=2):
-    h = tf.contrib.layers.max_pool2d(
+    h = slim.max_pool2d(
         h, kernel_size=k, stride=s, padding='SAME')
     return h
 
@@ -133,12 +136,12 @@ def conv_pad(h, n=64, s=1, k=3):
         tensor=h,
         paddings=tf.constant([[0, 0], [padsz, padsz], [padsz, padsz], [0, 0]]),
         mode='SYMMETRIC')
-    h = tf.contrib.layers.convolution2d(
+    h = slim.convolution2d(
         h, n, kernel_size=k, stride=s, padding='VALID', activation_fn=None)
     return h
 
 def conv_valid(h, n=64, s=1, k=3):
-    h = tf.contrib.layers.convolution2d(
+    h = slim.convolution2d(
         h, n, kernel_size=k, stride=s, padding='VALID', activation_fn=None)
     return h
 
@@ -153,10 +156,10 @@ def conv(h, n=64, s=1, k=3, w_initializer=None, w_normalization=True):
         n = h.get_shape()[-1] # use input's shape
     
     if w_initializer is None:
-        h = tf.contrib.layers.convolution2d(
+        h = slim.convolution2d(
             h, n, kernel_size=k, stride=s, padding='SAME', activation_fn=None)
     else:
-        h = tf.contrib.layers.convolution2d(
+        h = slim.convolution2d(
             h,
             n,
             kernel_size=k,
@@ -170,11 +173,11 @@ def conv(h, n=64, s=1, k=3, w_initializer=None, w_normalization=True):
 
 def fc(h, n=1024, w_initializer=None):
     if w_initializer is None:
-        h = tf.contrib.layers.fully_connected(
-            tf.contrib.layers.flatten(h), num_outputs=n, activation_fn=None)
+        h = slim.fully_connected(
+            slim.flatten(h), num_outputs=n, activation_fn=None)
     else:
-        h = tf.contrib.layers.fully_connected(
-            tf.contrib.layers.flatten(h),
+        h = slim.fully_connected(
+            slim.flatten(h),
             num_outputs=n,
             activation_fn=None,
             weights_initializer=w_initializer)
@@ -243,21 +246,21 @@ def runit(h, rtype = None):
         out = pixel_norm(out)
     elif rtype == 'relu_in':
         out = relu(h)
-        out = tf.contrib.layers.instance_norm(out)
+        out = slim.instance_norm(out)
     elif rtype == 'in_relu':
-        out = tf.contrib.layers.instance_norm(h,
+        out = slim.instance_norm(h,
             scale = False, activation_fn = relu)
     elif rtype == 'lrelu_in':
         out = lrelu(h)
-        out = tf.contrib.layers.instance_norm(out)
+        out = slim.instance_norm(out)
     elif rtype == 'in_lrelu':
-        out = tf.contrib.layers.instance_norm(h,
+        out = slim.instance_norm(h,
             scale = False, activation_fn = lrelu)
     elif rtype == 'bn_relu':
-        out = tf.contrib.layers.batch_norm(h,
+        out = slim.batch_norm(h,
             decay = 0.9, scale = False, activation_fn = relu, is_training = True)
     elif rtype == 'bn_relu_test':
-        out = tf.contrib.layers.batch_norm(h,
+        out = slim.batch_norm(h,
             decay = 0.9, scale = False, activation_fn = relu, is_training = False)
     elif rtype == 'glu':
         # gated linear unit
@@ -279,7 +282,7 @@ def runit(h, rtype = None):
 
 def in_relu(h):
     print('in_relu')
-    h = tf.contrib.layers.instance_norm(h,
+    h = slim.instance_norm(h,
             scale = False, activation_fn = relu)
     return h
 
@@ -335,20 +338,20 @@ def contribut_group_norm(x, groups=32):
 
 def grp_norm(h, ngroup=32, invaxis=(-3, -2)):
     h = contribut_group_norm(h, groups=ngroup)
-    # h = tf.contrib.layers.group_norm(h, groups = ngroup, reduction_axes=invaxis)
+    # h = slim.group_norm(h, groups = ngroup, reduction_axes=invaxis)
     return h
 
 
 def batch_norm(h, is_training=True, scale=True):
     # h = contribut_group_norm(h, groups = ngroup)
-    h = tf.contrib.layers.batch_norm(
+    h = slim.batch_norm(
         h, decay=0.9, scale=scale, is_training=is_training)
     return h
 
 
 def inst_norm(h, name='inst_norm'):
     with tf.compat.v1.variable_scope(name):
-        h = tf.contrib.layers.instance_norm(h)
+        h = slim.instance_norm(h)
     return h
 
 def pixel_norm(x, epsilon=1e-8):

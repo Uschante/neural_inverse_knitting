@@ -2,6 +2,8 @@ import math
 import numpy as np
 import tensorflow as tf
 
+import tf_slim as slim
+
 TF_EPS = tf.constant(1e-12, tf.float32)
 tf_fn_expdim2to4 = lambda tensor,dim0,dim1: tf.expand_dims(tf.expand_dims(tensor, dim0), dim1)
 tf_fn_expdim1to4 = lambda tensor,dim0,dim1,dim2: tf.expand_dims(tf.expand_dims(tf.expand_dims(tensor, dim0), dim1), dim2)

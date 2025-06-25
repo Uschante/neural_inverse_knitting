@@ -11,6 +11,8 @@ from .nnlib import *
 from .parameters import arch_para, hparams, Parameters
 from util import read_image, comp_confusionmat
 
+import tf_slim as slim
+
 from .layer_modules import prog_ch, tf_MILloss_xentropy, tf_loss_xentropy, tf_MILloss_accuracy, tf_background, syntax_loss, tf_accuracy, create_canonical_coordinates, oper_random_geo_perturb, oper_img2img, oper_img2prog_final, oper_img2prog_final_complex
 from . import rendnet
 from .danet import generator_unet
@@ -93,13 +95,13 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
                     t_logits = oper_img2img(t_input, prog_ch, params, 'img2prog')
                 elif reduce_type == 'avg_pooling':
                     t_logits = oper_img2img(t_resi_inp, prog_ch, params, 'img2prog')
-                    t_logits = tf.contrib.layers.avg_pool2d(t_logits, [8,8], 8)
+                    t_logits = slim.avg_pool2d(t_logits, [8,8], 8)
                 elif reduce_type == 'max_pooling':
                     t_logits = oper_img2img(t_resi_inp, prog_ch, params, 'img2prog')
-                    t_logits = tf.contrib.layers.max_pool2d(t_logits, [8,8], 8)
+                    t_logits = slim.max_pool2d(t_logits, [8,8], 8)
                 elif reduce_type == 'unet':
                     t_logits = generator_unet(t_resi_inp, prog_ch, params, 'img2prog')
-                    t_logits = tf.contrib.layers.avg_pool2d(t_logits, [8,8], 8)
+                    t_logits = slim.avg_pool2d(t_logits, [8,8], 8)
                 else:
                     raise ValueError('Invalid reduction type %s' % reduce_type)
 

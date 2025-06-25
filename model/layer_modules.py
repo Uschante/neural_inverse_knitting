@@ -11,6 +11,8 @@ from .parameters import arch_para, hparams, Parameters
 from .spatial_transformer import transformer
 from util import read_image, comp_confusionmat
 
+import tf_slim as slim
+
 from .tensorflow_vgg import custom_vgg19
 
 prog_ch = 17
@@ -219,7 +221,7 @@ def oper_global_warping(t_img, name='global_warp'):
             ])
         print('xform: ', xform_diff.get_shape())
         xform_diff = tf.reshape(xform_diff, [xform_diff.get_shape()[0], -1])
-        xform_diff = tf.contrib.layers.fully_connected(xform_diff, 6, scope='fc-1d')
+        xform_diff = slim.fully_connected(xform_diff, 6, scope='fc-1d')
 
         # identity transformation
         batch_size = t_img.get_shape()[0]
@@ -259,7 +261,7 @@ def oper_img2prog(t_img, params = dict(), name='img2prog'):
     outputs those as well as the corresponding 20x20 argmax label prediction
     '''
     def dilated_conv(h, n=64, r=2, k=3):
-        h = tf.contrib.layers.convolution2d(h, n, 
+        h = slim.convolution2d(h, n, 
                                             kernel_size=k, 
                                             rate=2, 
                                             stride=1, 
