@@ -1,0 +1,1024 @@
+TensorFlow 2.0 Upgrade Script
+-----------------------------
+Converted 29 files
+Detected 53 issues that require attention
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/model/basenet.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/model/basenet.py:96:31: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/basenet.py:99:31: ERROR: Using member tf.contrib.layers.max_pool2d in deprecated module tf.contrib. tf.contrib.layers.max_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/basenet.py:102:31: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/model/layer_modules.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/model/layer_modules.py:133:35: ERROR: Using member tf.contrib.image.sparse_image_warp in deprecated module tf.contrib. tf.contrib.image.sparse_image_warp cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/layer_modules.py:222:21: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/layer_modules.py:262:12: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/model/base.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/model/base.py:51:8: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/model/nnlib.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/model/nnlib.py:107:8: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:113:8: ERROR: Using member tf.contrib.layers.max_pool2d in deprecated module tf.contrib. tf.contrib.layers.max_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:136:8: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:141:8: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:156:12: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:159:12: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:173:12: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:174:12: ERROR: Using member tf.contrib.layers.flatten in deprecated module tf.contrib. tf.contrib.layers.flatten cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:176:12: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:177:12: ERROR: Using member tf.contrib.layers.flatten in deprecated module tf.contrib. tf.contrib.layers.flatten cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:246:14: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+neural_inverse_knitting/model/nnlib.py:246:14: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:248:14: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+neural_inverse_knitting/model/nnlib.py:248:14: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:252:14: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+neural_inverse_knitting/model/nnlib.py:252:14: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:254:14: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+neural_inverse_knitting/model/nnlib.py:254:14: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:257:14: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:260:14: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:282:8: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+neural_inverse_knitting/model/nnlib.py:282:8: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:344:8: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/nnlib.py:351:12: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+neural_inverse_knitting/model/nnlib.py:351:12: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/model/danet.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/model/danet.py:569:27: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/danet.py:968:27: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/model/m_feedforw.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/model/m_feedforw.py:721:20: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+neural_inverse_knitting/model/m_feedforw.py:808:8: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/model/ops.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/model/ops.py:112:16: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:116:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:134:15: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+neural_inverse_knitting/model/ops.py:146:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:204:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:207:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:246:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:249:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:325:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:331:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:349:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:366:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+neural_inverse_knitting/model/ops.py:371:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/model/tensorflow_vgg/vgg19_trainable.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/model/tensorflow_vgg/vgg19_trainable.py:164:8: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/util/instr.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/util/instr.py:90:4: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/util/checkpoint_to_npy.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/util/checkpoint_to_npy.py:48:4: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+File: neural_inverse_knitting/util/loader.py
+--------------------------------------------------------------------------------
+neural_inverse_knitting/util/loader.py:234:15: WARNING: Changing dataset.make_one_shot_iterator() to tf.compat.v1.data.make_one_shot_iterator(dataset). Please check this transformation.
+
+================================================================================
+Detailed log follows:
+
+================================================================================
+================================================================================
+Input tree: 'neural_inverse_knitting/'
+================================================================================
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/main.py'
+ outputting to 'neural_inverse_knitting_tf_2/main.py'
+--------------------------------------------------------------------------------
+
+54:4: INFO: Renamed 'tf.set_random_seed' to 'tf.compat.v1.set_random_seed'
+58:13: INFO: Renamed 'tf.ConfigProto' to 'tf.compat.v1.ConfigProto'
+63:9: INFO: Renamed 'tf.Session' to 'tf.compat.v1.Session'
+77:4: INFO: Renamed 'tf.app.run' to 'tf.compat.v1.app.run'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/render.py'
+ outputting to 'neural_inverse_knitting_tf_2/render.py'
+--------------------------------------------------------------------------------
+
+58:14: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+65:13: INFO: Renamed 'tf.ConfigProto' to 'tf.compat.v1.ConfigProto'
+68:9: INFO: Renamed 'tf.Session' to 'tf.compat.v1.Session'
+111:4: INFO: Renamed 'tf.app.run' to 'tf.compat.v1.app.run'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/migrate_test.py'
+ outputting to 'neural_inverse_knitting_tf_2/migrate_test.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/gpu_test.py'
+ outputting to 'neural_inverse_knitting_tf_2/gpu_test.py'
+--------------------------------------------------------------------------------
+
+19:16: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+20:16: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+23:13: INFO: Renamed 'tf.Session' to 'tf.compat.v1.Session'
+24:30: INFO: Added keywords to args of function 'tf.reduce_sum'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/basenet.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/basenet.py'
+--------------------------------------------------------------------------------
+
+52:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+70:22: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+70:39: INFO: Added keywords to args of function 'tf.shape'
+76:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+91:25: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+91:25: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+92:35: INFO: Added keywords to args of function 'tf.space_to_depth'
+92:35: INFO: Renamed 'tf.space_to_depth' to 'tf.compat.v1.space_to_depth'
+96:31: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+99:31: ERROR: Using member tf.contrib.layers.max_pool2d in deprecated module tf.contrib. tf.contrib.layers.max_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+102:31: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+106:26: INFO: Added keywords to args of function 'tf.argmax'
+145:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+146:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+148:22: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+159:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+160:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+162:32: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+164:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+165:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+167:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+168:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+169:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+171:24: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+222:48: INFO: Added keywords to args of function 'tf.reduce_mean'
+222:48: INFO: Renamed keyword argument for tf.reduce_mean from keep_dims to keepdims
+237:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/parameters.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/parameters.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/layer_modules.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/layer_modules.py'
+--------------------------------------------------------------------------------
+
+19:31: INFO: Renamed 'tf.fake_quant_with_min_max_args' to 'tf.quantization.fake_quant_with_min_max_args'
+20:32: INFO: Renamed 'tf.fake_quant_with_min_max_args' to 'tf.quantization.fake_quant_with_min_max_args'
+28:40: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+33:19: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+37:14: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+45:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+45:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+69:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+69:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+88:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+88:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+101:20: INFO: Added keywords to args of function 'tf.argmax'
+110:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+110:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+132:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+132:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+133:35: ERROR: Using member tf.contrib.image.sparse_image_warp in deprecated module tf.contrib. tf.contrib.image.sparse_image_warp cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+147:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+147:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+191:29: INFO: tf.variance_scaling_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+191:29: INFO: Renamed 'tf.variance_scaling_initializer' to 'tf.compat.v1.variance_scaling_initializer'
+210:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+210:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+222:21: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+242:29: INFO: Added keywords to args of function 'tf.convert_to_tensor'
+251:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+251:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+262:12: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+278:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+278:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+308:27: INFO: Added keywords to args of function 'tf.space_to_depth'
+308:27: INFO: Renamed 'tf.space_to_depth' to 'tf.compat.v1.space_to_depth'
+325:20: INFO: Added keywords to args of function 'tf.argmax'
+349:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+349:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+386:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+386:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+418:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+418:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+430:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+431:27: INFO: Added keywords to args of function 'tf.space_to_depth'
+431:27: INFO: Renamed 'tf.space_to_depth' to 'tf.compat.v1.space_to_depth'
+461:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+461:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+494:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+494:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+521:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+521:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+540:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+540:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+550:20: INFO: Added keywords to args of function 'tf.argmax'
+563:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+563:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+592:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+592:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+600:22: INFO: tf.variance_scaling_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+600:22: INFO: Renamed 'tf.variance_scaling_initializer' to 'tf.compat.v1.variance_scaling_initializer'
+621:18: INFO: Added keywords to args of function 'tf.reduce_mean'
+622:18: INFO: Added keywords to args of function 'tf.reduce_mean'
+643:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+643:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+644:28: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+644:45: INFO: Added keywords to args of function 'tf.shape'
+703:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+721:22: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+721:39: INFO: Added keywords to args of function 'tf.shape'
+730:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+784:24: INFO: Added keywords to args of function 'tf.argmax'
+810:34: INFO: Renamed 'tf.random_uniform' to 'tf.random.uniform'
+812:34: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+820:24: INFO: Added keywords to args of function 'tf.argmax'
+837:8: INFO: Added keywords to args of function 'tf.pad'
+841:11: INFO: Added keywords to args of function 'tf.shape'
+884:19: INFO: Added keywords to args of function 'tf.reduce_mean'
+887:20: INFO: Added keywords to args of function 'tf.reduce_min'
+894:20: INFO: Renamed 'tf.layers.max_pooling2d' to 'tf.compat.v1.layers.max_pooling2d'
+929:12: INFO: Added keywords to args of function 'tf.reduce_sum'
+930:14: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+932:12: INFO: Added keywords to args of function 'tf.reduce_sum'
+938:14: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+940:12: INFO: Added keywords to args of function 'tf.reduce_sum'
+966:15: INFO: Added keywords to args of function 'tf.reduce_sum'
+967:15: INFO: Added keywords to args of function 'tf.reduce_max'
+968:11: INFO: Added keywords to args of function 'tf.reduce_mean'
+991:20: INFO: Added keywords to args of function 'tf.reduce_max'
+992:40: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1002:30: INFO: Added keywords to args of function 'tf.reduce_min'
+1003:30: INFO: Added keywords to args of function 'tf.reduce_max'
+1014:15: INFO: Added keywords to args of function 'tf.nn.max_pool'
+1014:15: INFO: Renamed keyword argument for tf.nn.max_pool from value to input
+1014:15: INFO: Renamed 'tf.nn.max_pool' to 'tf.nn.max_pool2d'
+1015:16: INFO: Added keywords to args of function 'tf.nn.max_pool'
+1015:16: INFO: Renamed keyword argument for tf.nn.max_pool from value to input
+1015:16: INFO: Renamed 'tf.nn.max_pool' to 'tf.nn.max_pool2d'
+1023:40: INFO: Added keywords to args of function 'tf.reduce_min'
+1024:40: INFO: Added keywords to args of function 'tf.reduce_max'
+1052:13: INFO: Added keywords to args of function 'tf.reduce_sum'
+1089:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1090:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1092:22: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1103:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1104:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1106:32: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1108:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1109:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1111:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1112:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+1113:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+1115:24: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+1175:16: INFO: Renamed 'tf.random_uniform' to 'tf.random.uniform'
+1182:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+1251:36: INFO: Added keywords to args of function 'tf.gradients'
+1257:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+1358:31: INFO: Added keywords to args of function 'tf.reduce_mean'
+1367:38: INFO: Added keywords to args of function 'tf.reduce_sum'
+1427:19: INFO: Added keywords to args of function 'tf.shape'
+1432:19: INFO: Renamed 'tf.qr' to 'tf.linalg.qr'
+1433:22: INFO: Added keywords to args of function 'tf.reduce_mean'
+1479:19: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+1616:21: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1633:17: INFO: Added keywords to args of function 'tf.reduce_sum'
+1637:11: INFO: Renamed 'tf.py_func' to 'tf.compat.v1.py_func'
+1660:15: INFO: Added keywords to args of function 'tf.reduce_sum'
+1674:46: INFO: Added keywords to args of function 'tf.reduce_sum'
+1676:19: INFO: Added keywords to args of function 'tf.reduce_mean'
+1686:18: INFO: Added keywords to args of function 'tf.transpose'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/base.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/base.py'
+--------------------------------------------------------------------------------
+
+42:21: INFO: Renamed 'tf.train.Saver' to 'tf.compat.v1.train.Saver'
+51:8: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+60:19: INFO: Renamed 'tf.global_variables' to 'tf.compat.v1.global_variables'
+72:31: INFO: Renamed 'tf.global_variables' to 'tf.compat.v1.global_variables'
+79:25: INFO: Renamed 'tf.train.Saver' to 'tf.compat.v1.train.Saver'
+81:25: INFO: Renamed 'tf.train.Saver' to 'tf.compat.v1.train.Saver'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/__init__.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/spatial_transformer.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/spatial_transformer.py'
+--------------------------------------------------------------------------------
+
+56:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+57:18: INFO: Added keywords to args of function 'tf.transpose'
+64:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+66:24: INFO: Added keywords to args of function 'tf.shape'
+67:21: INFO: Added keywords to args of function 'tf.shape'
+68:20: INFO: Added keywords to args of function 'tf.shape'
+69:23: INFO: Added keywords to args of function 'tf.shape'
+78:28: INFO: Added keywords to args of function 'tf.shape'
+79:28: INFO: Added keywords to args of function 'tf.shape'
+127:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+134:28: INFO: Added keywords to args of function 'tf.transpose'
+146:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+147:24: INFO: Added keywords to args of function 'tf.shape'
+148:21: INFO: Added keywords to args of function 'tf.shape'
+149:20: INFO: Added keywords to args of function 'tf.shape'
+150:27: INFO: Added keywords to args of function 'tf.shape'
+180:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+201:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/rendnet.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/rendnet.py'
+--------------------------------------------------------------------------------
+
+21:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+21:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+23:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+42:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+42:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+44:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+44:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+60:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+66:17: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+66:17: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+68:27: INFO: Renamed 'tf.random_uniform' to 'tf.random.uniform'
+109:15: INFO: Renamed 'tf.get_collection' to 'tf.compat.v1.get_collection'
+149:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+155:13: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+155:13: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+157:24: INFO: Renamed 'tf.random_uniform' to 'tf.random.uniform'
+181:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+181:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+183:17: INFO: Added keywords to args of function 'tf.pad'
+188:32: INFO: tf.truncated_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+188:32: INFO: Renamed 'tf.truncated_normal_initializer' to 'tf.compat.v1.truncated_normal_initializer'
+194:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+194:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+196:24: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+196:41: INFO: Added keywords to args of function 'tf.shape'
+231:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+239:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+241:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+242:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+268:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+278:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+296:19: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/nnlib.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/nnlib.py'
+--------------------------------------------------------------------------------
+
+61:35: INFO: Added keywords to args of function 'tf.shape'
+70:16: INFO: Added keywords to args of function 'tf.reduce_sum'
+100:11: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+107:8: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+113:8: ERROR: Using member tf.contrib.layers.max_pool2d in deprecated module tf.contrib. tf.contrib.layers.max_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+121:15: INFO: Added keywords to args of function 'tf.nn.max_pool'
+121:15: INFO: Renamed keyword argument for tf.nn.max_pool from value to input
+121:15: INFO: Renamed 'tf.nn.max_pool' to 'tf.nn.max_pool2d'
+123:15: INFO: Added keywords to args of function 'tf.reduce_max'
+125:15: INFO: Added keywords to args of function 'tf.nn.avg_pool'
+125:15: INFO: Renamed keyword argument for tf.nn.avg_pool from value to input
+125:15: INFO: Renamed 'tf.nn.avg_pool' to 'tf.nn.avg_pool2d'
+132:8: INFO: Added keywords to args of function 'tf.pad'
+136:8: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+141:8: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+149:11: INFO: Added keywords to args of function 'tf.nn.conv2d'
+149:11: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+156:12: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+159:12: ERROR: Using member tf.contrib.layers.convolution2d in deprecated module tf.contrib. tf.contrib.layers.convolution2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+173:12: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+174:12: ERROR: Using member tf.contrib.layers.flatten in deprecated module tf.contrib. tf.contrib.layers.flatten cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+176:12: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+177:12: ERROR: Using member tf.contrib.layers.flatten in deprecated module tf.contrib. tf.contrib.layers.flatten cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+246:14: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+246:14: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+248:14: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+248:14: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+252:14: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+252:14: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+254:14: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+254:14: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+257:14: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+260:14: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+282:8: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+282:8: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+304:19: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+310:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+314:12: INFO: Added keywords to args of function 'tf.transpose'
+320:20: INFO: Added keywords to args of function 'tf.nn.moments'
+320:20: INFO: Renamed keyword argument for tf.nn.moments from keep_dims to keepdims
+321:25: INFO: Renamed 'tf.rsqrt' to 'tf.math.rsqrt'
+332:17: INFO: Added keywords to args of function 'tf.transpose'
+344:8: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+350:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+351:12: WARNING: tf.contrib.layers.instance_norm requires manual check. (Manual edit required) `tf.contrib.layers.instance_norm` has been migrated to `tfa.layers.InstanceNormalization` in TensorFlow Addons. The API spec may have changed during the migration. Please see https://github.com/tensorflow/addons for more info.
+351:12: ERROR: Using member tf.contrib.layers.instance_norm in deprecated module tf.contrib. tf.contrib.layers.instance_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+355:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+356:19: INFO: Renamed 'tf.rsqrt' to 'tf.math.rsqrt'
+356:28: INFO: Added keywords to args of function 'tf.reduce_mean'
+368:8: INFO: Renamed 'tf.image.resize_images' to 'tf.image.resize'
+387:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+389:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+481:30: INFO: Added keywords to args of function 'tf.convert_to_tensor'
+496:32: INFO: Added keywords to args of function 'tf.nn.depthwise_conv2d'
+498:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/danet.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/danet.py'
+--------------------------------------------------------------------------------
+
+21:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+21:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+24:21: INFO: Added keywords to args of function 'tf.pad'
+29:48: INFO: tf.truncated_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+29:48: INFO: Renamed 'tf.truncated_normal_initializer' to 'tf.compat.v1.truncated_normal_initializer'
+33:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+33:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+35:48: INFO: tf.truncated_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+35:48: INFO: Renamed 'tf.truncated_normal_initializer' to 'tf.compat.v1.truncated_normal_initializer'
+43:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+43:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+45:24: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+45:41: INFO: Added keywords to args of function 'tf.shape'
+66:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+66:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+68:24: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+68:41: INFO: Added keywords to args of function 'tf.shape'
+72:23: INFO: Renamed 'tf.image.resize_images' to 'tf.image.resize'
+96:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+96:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+188:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+188:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+197:16: INFO: Added keywords to args of function 'tf.pad'
+199:16: INFO: Added keywords to args of function 'tf.pad'
+206:13: INFO: Added keywords to args of function 'tf.pad'
+225:13: INFO: Added keywords to args of function 'tf.pad'
+267:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+285:22: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+285:39: INFO: Added keywords to args of function 'tf.shape'
+293:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+307:26: INFO: Added keywords to args of function 'tf.argmax'
+347:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+347:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+378:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+378:39: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+430:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+448:22: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+448:39: INFO: Added keywords to args of function 'tf.shape'
+456:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+470:26: INFO: Added keywords to args of function 'tf.argmax'
+529:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+547:22: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+547:39: INFO: Added keywords to args of function 'tf.shape'
+555:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+569:27: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+570:26: INFO: Added keywords to args of function 'tf.argmax'
+629:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+630:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+632:22: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+643:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+644:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+646:32: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+648:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+649:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+651:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+652:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+653:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+655:24: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+692:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+721:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+756:19: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+936:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+954:22: INFO: Renamed 'tf.random_normal' to 'tf.random.normal'
+954:39: INFO: Added keywords to args of function 'tf.shape'
+963:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+968:27: ERROR: Using member tf.contrib.layers.avg_pool2d in deprecated module tf.contrib. tf.contrib.layers.avg_pool2d cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+969:26: INFO: Added keywords to args of function 'tf.argmax'
+1008:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1009:18: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1018:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1019:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1021:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1022:24: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+1023:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+1024:20: INFO: Changed tf.image.resize_bilinear call to tf.image.resize(..., method=tf.image.ResizeMethod.BILINEAR).
+1040:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/m_feedforw.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/m_feedforw.py'
+--------------------------------------------------------------------------------
+
+36:31: INFO: Renamed 'tf.fake_quant_with_min_max_args' to 'tf.quantization.fake_quant_with_min_max_args'
+37:55: INFO: Added keywords to args of function 'tf.reduce_max'
+37:55: INFO: Renamed keyword argument for tf.reduce_max from keep_dims to keepdims
+42:15: INFO: Renamed keyword argument for tf.squeeze from squeeze_dims to axis
+212:37: INFO: Renamed 'tf.random_uniform' to 'tf.random.uniform'
+213:37: INFO: Renamed 'tf.random_uniform' to 'tf.random.uniform'
+221:28: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+229:29: INFO: Renamed 'tf.where' to 'tf.compat.v1.where'
+305:28: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+306:21: INFO: Renamed 'tf.data.Iterator' to 'tf.compat.v1.data.Iterator'
+413:12: INFO: Added keywords to args of function 'tf.reduce_mean'
+417:12: INFO: Added keywords to args of function 'tf.reduce_mean'
+424:16: INFO: Added keywords to args of function 'tf.reduce_mean'
+469:53: INFO: tf.summary.image requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+469:53: INFO: Renamed 'tf.summary.image' to 'tf.compat.v1.summary.image'
+492:53: INFO: tf.summary.image requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+492:53: INFO: Renamed 'tf.summary.image' to 'tf.compat.v1.summary.image'
+497:49: INFO: tf.summary.image requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+497:49: INFO: Renamed 'tf.summary.image' to 'tf.compat.v1.summary.image'
+501:49: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+501:49: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+506:54: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+506:54: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+506:83: INFO: Added keywords to args of function 'tf.reduce_mean'
+511:56: INFO: tf.summary.image requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+511:56: INFO: Renamed 'tf.summary.image' to 'tf.compat.v1.summary.image'
+521:56: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+521:56: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+552:28: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+553:21: INFO: Renamed 'tf.data.Iterator' to 'tf.compat.v1.data.Iterator'
+581:20: INFO: Renamed 'tf.train.get_or_create_global_step' to 'tf.compat.v1.train.get_or_create_global_step'
+583:13: INFO: tf.train.exponential_decay requires manual check. To use learning rate decay schedules with TensorFlow 2.0, switch to the schedules in `tf.keras.optimizers.schedules`.
+
+583:13: INFO: Renamed 'tf.train.exponential_decay' to 'tf.compat.v1.train.exponential_decay'
+594:20: INFO: Renamed 'tf.train.AdamOptimizer' to 'tf.compat.v1.train.AdamOptimizer'
+596:29: INFO: optim.compute_gradients called with colocate_gradients_with_ops argument, requires manual check: Optimizer.compute_gradients no longer takes 'colocate_gradients_with_ops' argument, it behaves as if it was set to True.
+596:29: INFO: Removed argument colocate_gradients_with_ops for function optim.compute_gradients
+605:29: INFO: Renamed 'tf.get_collection' to 'tf.compat.v1.get_collection'
+605:47: INFO: Renamed 'tf.GraphKeys' to 'tf.compat.v1.GraphKeys'
+614:17: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+614:51: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+641:13: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+641:13: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+643:31: INFO: Renamed 'tf.trainable_variables' to 'tf.compat.v1.trainable_variables'
+671:17: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+671:17: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+673:35: INFO: Renamed 'tf.trainable_variables' to 'tf.compat.v1.trainable_variables'
+686:52: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+686:52: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+688:23: INFO: tf.summary.merge requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+688:23: INFO: Renamed 'tf.summary.merge' to 'tf.compat.v1.summary.merge'
+689:23: INFO: tf.summary.merge requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+689:23: INFO: Renamed 'tf.summary.merge' to 'tf.compat.v1.summary.merge'
+690:23: INFO: tf.summary.merge_all requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+690:23: INFO: Renamed 'tf.summary.merge_all' to 'tf.compat.v1.summary.merge_all'
+692:23: INFO: tf.summary.FileWriter requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+692:23: INFO: Renamed 'tf.summary.FileWriter' to 'tf.compat.v1.summary.FileWriter'
+693:23: INFO: tf.summary.FileWriter requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+693:23: INFO: Renamed 'tf.summary.FileWriter' to 'tf.compat.v1.summary.FileWriter'
+696:8: INFO: Renamed 'tf.local_variables_initializer' to 'tf.compat.v1.local_variables_initializer'
+697:8: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+717:30: INFO: Renamed 'tf.train.global_step' to 'tf.compat.v1.train.global_step'
+717:62: INFO: Renamed 'tf.train.get_global_step' to 'tf.compat.v1.train.get_global_step'
+721:20: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+721:58: INFO: Renamed 'tf.train.get_global_step' to 'tf.compat.v1.train.get_global_step'
+808:8: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+817:8: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/ops.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/ops.py'
+--------------------------------------------------------------------------------
+
+21:15: INFO: Added keywords to args of function 'tf.shape'
+23:15: INFO: Added keywords to args of function 'tf.shape'
+24:15: INFO: Changed tf.to_int32 call to tf.cast(..., dtype=tf.int32).
+24:27: INFO: Changed tf.to_float call to tf.cast(..., dtype=tf.float32).
+27:15: INFO: Renamed 'tf.image.resize_images' to 'tf.image.resize'
+88:14: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+96:9: INFO: Renamed 'tf.Session' to 'tf.compat.v1.Session'
+97:15: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+110:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+112:16: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+112:16: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+114:24: INFO: tf.random_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+114:24: INFO: Renamed 'tf.random_normal_initializer' to 'tf.compat.v1.random_normal_initializer'
+116:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+116:17: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+117:43: INFO: tf.constant_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+117:43: INFO: Renamed 'tf.constant_initializer' to 'tf.compat.v1.constant_initializer'
+118:25: INFO: Added keywords to args of function 'tf.nn.moments'
+118:25: INFO: Renamed keyword argument for tf.nn.moments from keep_dims to keepdims
+120:14: INFO: Renamed 'tf.rsqrt' to 'tf.math.rsqrt'
+128:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+134:15: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+144:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+146:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+146:17: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+149:24: INFO: tf.random_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+149:24: INFO: Renamed 'tf.random_normal_initializer' to 'tf.compat.v1.random_normal_initializer'
+152:23: INFO: Added keywords to args of function 'tf.pad'
+154:15: INFO: Added keywords to args of function 'tf.nn.conv2d'
+154:15: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+165:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+200:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+204:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+204:12: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+206:24: INFO: Changing tf.contrib.layers xavier initializer to a tf.compat.v1.keras.initializers.VarianceScaling and converting arguments.
+
+207:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+207:17: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+208:48: INFO: tf.constant_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+208:48: INFO: Renamed 'tf.constant_initializer' to 'tf.compat.v1.constant_initializer'
+217:13: INFO: Added keywords to args of function 'tf.nn.conv2d'
+217:13: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+222:13: INFO: Added keywords to args of function 'tf.nn.conv2d'
+222:13: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+226:13: INFO: Added keywords to args of function 'tf.nn.conv2d'
+226:13: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+245:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+246:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+246:12: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+248:24: INFO: Changing tf.contrib.layers xavier initializer to a tf.compat.v1.keras.initializers.VarianceScaling and converting arguments.
+
+249:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+249:17: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+250:48: INFO: tf.constant_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+250:48: INFO: Renamed 'tf.constant_initializer' to 'tf.compat.v1.constant_initializer'
+259:13: INFO: Added keywords to args of function 'tf.nn.conv2d'
+259:13: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+272:15: INFO: Added keywords to args of function 'tf.nn.depthwise_conv2d'
+286:14: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+292:18: INFO: Added keywords to args of function 'tf.transpose'
+300:9: INFO: Renamed 'tf.Session' to 'tf.compat.v1.Session'
+301:15: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+324:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+325:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+325:12: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+327:24: INFO: Changing tf.contrib.layers xavier initializer to a tf.compat.v1.keras.initializers.VarianceScaling and converting arguments.
+
+328:15: INFO: Added keywords to args of function 'tf.nn.conv2d'
+328:15: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+331:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+331:17: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+332:48: INFO: tf.constant_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+332:48: INFO: Renamed 'tf.constant_initializer' to 'tf.compat.v1.constant_initializer'
+334:56: INFO: Added keywords to args of function 'tf.shape'
+348:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+349:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+349:12: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+351:24: INFO: Changing tf.contrib.layers xavier initializer to a tf.compat.v1.keras.initializers.VarianceScaling and converting arguments.
+
+352:15: INFO: Added keywords to args of function 'tf.nn.conv2d'
+352:15: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+365:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+366:12: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+366:12: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+367:21: INFO: tf.truncated_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+367:21: INFO: Renamed 'tf.truncated_normal_initializer' to 'tf.compat.v1.truncated_normal_initializer'
+371:17: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+371:17: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+372:48: INFO: tf.constant_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+372:48: INFO: Renamed 'tf.constant_initializer' to 'tf.compat.v1.constant_initializer'
+386:40: INFO: Added keywords to args of function 'tf.transpose'
+387:34: INFO: Added keywords to args of function 'tf.shape'
+398:39: INFO: Added keywords to args of function 'tf.transpose'
+399:34: INFO: Added keywords to args of function 'tf.shape'
+403:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+403:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+414:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+414:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+423:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+423:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+427:13: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+427:13: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+441:13: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+441:13: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+467:53: INFO: Added keywords to args of function 'tf.shape'
+471:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+471:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+476:13: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+476:13: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+499:13: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+499:13: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+515:39: INFO: Added keywords to args of function 'tf.shape'
+519:16: INFO: tf.assert_equal requires manual check. tf.assert_equal has been changed to return None, the data argument has been removed, and arguments have been reordered.
+The calls have been converted to compat.v1 for safety (even though  they may already have been correct).
+519:16: INFO: Renamed 'tf.assert_equal' to 'tf.compat.v1.assert_equal'
+520:8: INFO: Added keywords to args of function 'tf.shape'
+548:12: INFO: Added keywords to args of function 'tf.reduce_min'
+549:12: INFO: Added keywords to args of function 'tf.reduce_max'
+554:9: INFO: Added keywords to args of function 'tf.pad'
+566:9: INFO: Added keywords to args of function 'tf.transpose'
+571:9: INFO: Added keywords to args of function 'tf.transpose'
+576:9: INFO: Added keywords to args of function 'tf.transpose'
+580:9: INFO: Added keywords to args of function 'tf.transpose'
+601:12: INFO: Added keywords to args of function 'tf.reduce_min'
+602:12: INFO: Added keywords to args of function 'tf.reduce_max'
+607:9: INFO: Added keywords to args of function 'tf.pad'
+613:8: INFO: Added keywords to args of function 'tf.shape'
+614:8: INFO: Added keywords to args of function 'tf.shape'
+618:9: INFO: Added keywords to args of function 'tf.transpose'
+624:11: INFO: tf.summary.image requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+624:11: INFO: Renamed 'tf.summary.image' to 'tf.compat.v1.summary.image'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/tensorflow_vgg/utils.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/tensorflow_vgg/utils.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/tensorflow_vgg/vgg16.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/tensorflow_vgg/vgg16.py'
+--------------------------------------------------------------------------------
+
+84:15: INFO: Added keywords to args of function 'tf.nn.avg_pool'
+84:15: INFO: Renamed keyword argument for tf.nn.avg_pool from value to input
+84:15: INFO: Renamed 'tf.nn.avg_pool' to 'tf.nn.avg_pool2d'
+87:15: INFO: Added keywords to args of function 'tf.nn.max_pool'
+87:15: INFO: Renamed keyword argument for tf.nn.max_pool from value to input
+87:15: INFO: Renamed 'tf.nn.max_pool' to 'tf.nn.max_pool2d'
+90:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+93:19: INFO: Added keywords to args of function 'tf.nn.conv2d'
+93:19: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+102:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/tensorflow_vgg/vgg19_trainable.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/tensorflow_vgg/vgg19_trainable.py'
+--------------------------------------------------------------------------------
+
+75:25: INFO: Added keywords to args of function 'tf.cond'
+75:53: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+77:25: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+82:25: INFO: Added keywords to args of function 'tf.cond'
+82:53: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+84:25: INFO: Changing keep_prob arg of tf.nn.dropout to rate, and recomputing value.
+
+93:15: INFO: Added keywords to args of function 'tf.nn.avg_pool'
+93:15: INFO: Renamed keyword argument for tf.nn.avg_pool from value to input
+93:15: INFO: Renamed 'tf.nn.avg_pool' to 'tf.nn.avg_pool2d'
+96:15: INFO: Added keywords to args of function 'tf.nn.max_pool'
+96:15: INFO: Renamed keyword argument for tf.nn.max_pool from value to input
+96:15: INFO: Renamed 'tf.nn.max_pool' to 'tf.nn.max_pool2d'
+99:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+102:19: INFO: Added keywords to args of function 'tf.nn.conv2d'
+102:19: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+109:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+118:24: INFO: Renamed 'tf.truncated_normal' to 'tf.random.truncated_normal'
+121:24: INFO: Renamed 'tf.truncated_normal' to 'tf.random.truncated_normal'
+127:24: INFO: Renamed 'tf.truncated_normal' to 'tf.random.truncated_normal'
+130:24: INFO: Renamed 'tf.truncated_normal' to 'tf.random.truncated_normal'
+154:32: INFO: Renamed 'tf.Session' to 'tf.compat.v1.Session'
+164:8: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/tensorflow_vgg/vgg19.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/tensorflow_vgg/vgg19.py'
+--------------------------------------------------------------------------------
+
+87:15: INFO: Added keywords to args of function 'tf.nn.avg_pool'
+87:15: INFO: Renamed keyword argument for tf.nn.avg_pool from value to input
+87:15: INFO: Renamed 'tf.nn.avg_pool' to 'tf.nn.avg_pool2d'
+90:15: INFO: Added keywords to args of function 'tf.nn.max_pool'
+90:15: INFO: Renamed keyword argument for tf.nn.max_pool from value to input
+90:15: INFO: Renamed 'tf.nn.max_pool' to 'tf.nn.max_pool2d'
+93:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+96:19: INFO: Added keywords to args of function 'tf.nn.conv2d'
+96:19: INFO: Renamed keyword argument for tf.nn.conv2d from filter to filters
+105:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/tensorflow_vgg/custom_vgg19.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/tensorflow_vgg/custom_vgg19.py'
+--------------------------------------------------------------------------------
+
+23:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+23:46: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+91:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+91:46: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/model/tensorflow_vgg/__init__.py'
+ outputting to 'neural_inverse_knitting_tf_2/model/tensorflow_vgg/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/test/visualize.py'
+ outputting to 'neural_inverse_knitting_tf_2/test/visualize.py'
+--------------------------------------------------------------------------------
+
+ERROR: Failed to parse.
+Traceback (most recent call last):
+  File "/home/tim/miniconda3/envs/neural_knitting/lib/python3.7/site-packages/tensorflow_core/tools/compatibility/ast_edits.py", line 916, in update_string_pasta
+    t = pasta.parse(text)
+  File "/home/tim/miniconda3/envs/neural_knitting/lib/python3.7/site-packages/pasta/__init__.py", line 23, in parse
+    t = ast_utils.parse(src)
+  File "/home/tim/miniconda3/envs/neural_knitting/lib/python3.7/site-packages/pasta/base/ast_utils.py", line 56, in parse
+    tree = ast.parse(sanitize_source(src))
+  File "/home/tim/miniconda3/envs/neural_knitting/lib/python3.7/ast.py", line 35, in parse
+    return compile(source, filename, mode, PyCF_ONLY_AST)
+  File "<unknown>", line 1
+    ﻿import numpy as np
+          ^
+SyntaxError: invalid character in identifier
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/test/eval_results.py'
+ outputting to 'neural_inverse_knitting_tf_2/test/eval_results.py'
+--------------------------------------------------------------------------------
+
+ERROR: Failed to parse.
+Traceback (most recent call last):
+  File "/home/tim/miniconda3/envs/neural_knitting/lib/python3.7/site-packages/tensorflow_core/tools/compatibility/ast_edits.py", line 916, in update_string_pasta
+    t = pasta.parse(text)
+  File "/home/tim/miniconda3/envs/neural_knitting/lib/python3.7/site-packages/pasta/__init__.py", line 23, in parse
+    t = ast_utils.parse(src)
+  File "/home/tim/miniconda3/envs/neural_knitting/lib/python3.7/site-packages/pasta/base/ast_utils.py", line 56, in parse
+    tree = ast.parse(sanitize_source(src))
+  File "/home/tim/miniconda3/envs/neural_knitting/lib/python3.7/ast.py", line 35, in parse
+    return compile(source, filename, mode, PyCF_ONLY_AST)
+  File "<unknown>", line 1
+    ﻿import numpy as np
+          ^
+SyntaxError: invalid character in identifier
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/util/utils.py'
+ outputting to 'neural_inverse_knitting_tf_2/util/utils.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/util/instr.py'
+ outputting to 'neural_inverse_knitting_tf_2/util/instr.py'
+--------------------------------------------------------------------------------
+
+90:4: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/util/__init__.py'
+ outputting to 'neural_inverse_knitting_tf_2/util/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/util/log_tool.py'
+ outputting to 'neural_inverse_knitting_tf_2/util/log_tool.py'
+--------------------------------------------------------------------------------
+
+11:31: INFO: Renamed 'tf.fake_quant_with_min_max_args' to 'tf.quantization.fake_quant_with_min_max_args'
+12:44: INFO: Added keywords to args of function 'tf.reduce_min'
+13:55: INFO: Added keywords to args of function 'tf.reduce_max'
+14:62: INFO: Added keywords to args of function 'tf.reduce_max'
+28:23: INFO: Renamed 'tf.trainable_variables' to 'tf.compat.v1.trainable_variables'
+33:23: INFO: Renamed 'tf.trainable_variables' to 'tf.compat.v1.trainable_variables'
+64:4: INFO: tf.summary.image requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+64:4: INFO: Renamed 'tf.summary.image' to 'tf.compat.v1.summary.image'
+69:9: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+69:9: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+72:19: INFO: Added keywords to args of function 'tf.reduce_mean'
+73:16: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+73:16: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+76:16: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+76:16: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+76:45: INFO: Added keywords to args of function 'tf.reduce_mean'
+79:17: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+79:17: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+80:33: INFO: Added keywords to args of function 'tf.reduce_mean'
+81:16: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+81:16: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+85:16: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+85:16: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+85:41: INFO: Added keywords to args of function 'tf.reduce_max'
+87:16: INFO: tf.summary.scalar requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+87:16: INFO: Renamed 'tf.summary.scalar' to 'tf.compat.v1.summary.scalar'
+87:41: INFO: Added keywords to args of function 'tf.reduce_min'
+91:16: INFO: tf.summary.histogram requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+91:16: INFO: Renamed 'tf.summary.histogram' to 'tf.compat.v1.summary.histogram'
+94:15: INFO: tf.summary.merge requires manual check. The TF 1.x summary API cannot be automatically migrated to TF 2.0, so symbols have been converted to tf.compat.v1.summary.* and must be migrated manually. Typical usage will only require changes to the summary writing logic, not to individual calls like scalar(). For examples of the new summary API, see the Effective TF 2.0 migration document or check the TF 2.0 TensorBoard tutorials.
+94:15: INFO: Renamed 'tf.summary.merge' to 'tf.compat.v1.summary.merge'
+206:20: INFO: Renamed 'tf.py_func' to 'tf.compat.v1.py_func'
+216:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+216:55: INFO: Renamed 'tf.AUTO_REUSE' to 'tf.compat.v1.AUTO_REUSE'
+219:26: INFO: Renamed 'tf.confusion_matrix' to 'tf.math.confusion_matrix'
+224:47: INFO: Added keywords to args of function 'tf.reduce_sum'
+237:27: INFO: Renamed 'tf.assign' to 'tf.compat.v1.assign'
+240:49: INFO: Added keywords to args of function 'tf.reduce_sum'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/util/checkpoint_to_npy.py'
+ outputting to 'neural_inverse_knitting_tf_2/util/checkpoint_to_npy.py'
+--------------------------------------------------------------------------------
+
+23:11: INFO: Renamed 'tf.train.import_meta_graph' to 'tf.compat.v1.train.import_meta_graph'
+25:15: INFO: Renamed 'tf.get_collection' to 'tf.compat.v1.get_collection'
+28:13: INFO: Renamed 'tf.ConfigProto' to 'tf.compat.v1.ConfigProto'
+31:9: INFO: Renamed 'tf.Session' to 'tf.compat.v1.Session'
+48:4: WARNING: *.save requires manual check. (This warning is only applicable if the code saves a tf.Keras model) Keras model.save now saves to the Tensorflow SavedModel format by default, instead of HDF5. To continue saving to HDF5, add the argument save_format='h5' to the save() function.
+52:4: INFO: Renamed 'tf.app.run' to 'tf.compat.v1.app.run'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'neural_inverse_knitting/util/loader.py'
+ outputting to 'neural_inverse_knitting_tf_2/util/loader.py'
+--------------------------------------------------------------------------------
+
+124:13: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+124:13: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+146:41: INFO: Renamed 'tf.py_func' to 'tf.compat.v1.py_func'
+164:47: INFO: Renamed 'tf.py_func' to 'tf.compat.v1.py_func'
+198:13: INFO: `name` passed to `name_scope`. Because you may be re-entering an existing scope, it is not safe to convert automatically,  the v2 name_scope does not support re-entering scopes by name.
+
+198:13: INFO: Renamed 'tf.name_scope' to 'tf.compat.v1.name_scope'
+223:47: INFO: Renamed 'tf.py_func' to 'tf.compat.v1.py_func'
+234:15: WARNING: Changing dataset.make_one_shot_iterator() to tf.compat.v1.data.make_one_shot_iterator(dataset). Please check this transformation.
+
+--------------------------------------------------------------------------------
+

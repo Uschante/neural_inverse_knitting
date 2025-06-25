@@ -33,13 +33,13 @@ class Parameters:
     pass
 
 
-fn_clipping01 = lambda tensor: tf.fake_quant_with_min_max_args(tensor, min=0., max=1., num_bits=8)
-fn_normalize_by_max = lambda tensor: tf.divide(tensor, tf.reduce_max(tensor, axis=[1,2,3], keep_dims=True) + 1e-5)
+fn_clipping01 = lambda tensor: tf.quantization.fake_quant_with_min_max_args(tensor, min=0., max=1., num_bits=8)
+fn_normalize_by_max = lambda tensor: tf.divide(tensor, tf.reduce_max(input_tensor=tensor, axis=[1,2,3], keepdims=True) + 1e-5)
 
 def fn_loss_entropy(tensor, label):
     return tf.nn.sparse_softmax_cross_entropy_with_logits(
         logits=tensor,
-        labels=tf.squeeze(label, squeeze_dims=[3]),
+        labels=tf.squeeze(label, axis=[3]),
         name="entropy")
 
 def weight_map(weights, name):
@@ -209,8 +209,8 @@ class FeedForwardNetworks(Model):
         # semantic augmentation
         self.oparam.params['is_train'] = is_train
         if is_train and self.oparam.params.get('augment_mirror', 0):
-            t_cond_real = tf.greater(tf.random_uniform([self.batch]), 0.5)
-            t_cond_synt = tf.greater(tf.random_uniform([self.batch]), 0.5)
+            t_cond_real = tf.greater(tf.random.uniform([self.batch]), 0.5)
+            t_cond_synt = tf.greater(tf.random.uniform([self.batch]), 0.5)
             for key in X_in.keys():
                 # mirroring image
                 t_img = X_in[key]
@@ -218,7 +218,7 @@ class FeedForwardNetworks(Model):
                     t_cond = t_cond_real
                 else:
                     t_cond = t_cond_synt
-                X_in[key] = tf.where(t_cond, tf_mirror_image(t_img), t_img)
+                X_in[key] = tf.compat.v1.where(t_cond, tf_mirror_image(t_img), t_img)
             for key in Y_out.keys():
                 # mirroring instruction
                 t_inst = Y_out[key]
@@ -226,7 +226,7 @@ class FeedForwardNetworks(Model):
                     t_cond = t_cond_real
                 else:
                     t_cond = t_cond_synt
-                Y_out[key] = tf.where(t_cond, tf_mirror_instr(t_inst), t_inst)
+                Y_out[key] = tf.compat.v1.where(t_cond, tf_mirror_instr(t_inst), t_inst)
 
         # remove unsupervised data from dictionary if not used
         if self.oparam.params.get('use_unsup', 0) == 0:
@@ -302,8 +302,8 @@ class FeedForwardNetworks(Model):
         self.val_handle   = self.sess.run(val_iter.string_handle())
         
         # create iterator switch
-        self.batch_handle = tf.placeholder(tf.string, shape=[])
-        batch_iter = tf.data.Iterator.from_string_handle(self.batch_handle, train_iter.output_types)
+        self.batch_handle = tf.compat.v1.placeholder(tf.string, shape=[])
+        batch_iter = tf.compat.v1.data.Iterator.from_string_handle(self.batch_handle, train_iter.output_types)
 
         # get effective batch
         curbatch = batch_iter.get_next()
@@ -410,18 +410,18 @@ class FeedForwardNetworks(Model):
 
         # create full losses
         self.tf_models.loss_total_gene = tf.add_n([
-            tf.reduce_mean(l * self.oparam.weights.get(i, 1.0)) # default weight of 1.0
+            tf.reduce_mean(input_tensor=l * self.oparam.weights.get(i, 1.0)) # default weight of 1.0
             for (i, l) in self.tf_models.loss_dict_Gene.items()
         ])
         self.tf_models.loss_main_gene = tf.add_n([
-            tf.reduce_mean(l * self.oparam.weights.get(i, 1.0)) # default weight of 1.0
+            tf.reduce_mean(input_tensor=l * self.oparam.weights.get(i, 1.0)) # default weight of 1.0
             for (i, l) in self.tf_models.loss_dict_Gene.items()
             # filtering generator and adapter networks, and feedback
             if 'adapt' not in i and 'gen' not in i and 'feedback' not in i
         ])
         if self.oparam.params.get('discr', 1):
             self.tf_models.loss_total_disc = tf.add_n([
-                tf.reduce_mean(l * self.oparam.weights.get(i, 1.0)) # default weight of 1.0
+                tf.reduce_mean(input_tensor=l * self.oparam.weights.get(i, 1.0)) # default weight of 1.0
                 for (i, l) in self.tf_models.loss_dict_Disc.items()
             ])
         else:
@@ -466,7 +466,7 @@ class FeedForwardNetworks(Model):
                 sum_name = cat + '/' + name
                 if cat != 'inputs' and use_renderer == 0:
                     tf_img = tf_img + 0.5
-                self.summaries['images'][sum_name] = tf.summary.image(
+                self.summaries['images'][sum_name] = tf.compat.v1.summary.image(
                     sum_name, fn_clipping01(tf_img), max_outputs = 5)
         images = {
             'gt' : self.tf_models.Y,
@@ -489,26 +489,26 @@ class FeedForwardNetworks(Model):
                     sum_name = cat + '/' + name
                 # label = fn_clipping01(tf_ind_to_rgb(tf_img))
                 label = tf_ind_to_rgb(tf_img)
-                self.summaries['images'][sum_name] = tf.summary.image(
+                self.summaries['images'][sum_name] = tf.compat.v1.summary.image(
                     sum_name, label, max_outputs = 5)
 
         for name, t_bg in net.bg.items():
             sum_name = 'bg/' + name
-            self.summaries['images'][sum_name] = tf.summary.image(sum_name, tf.cast(t_bg, tf.float32), max_outputs = 5)
+            self.summaries['images'][sum_name] = tf.compat.v1.summary.image(sum_name, tf.cast(t_bg, tf.float32), max_outputs = 5)
 
         # loss summary
         self.summaries['scalar'] = dict()
-        self.summaries['scalar']['total_loss'] = tf.summary.scalar("loss_total", self.tf_models.loss_total_gene)
+        self.summaries['scalar']['total_loss'] = tf.compat.v1.summary.scalar("loss_total", self.tf_models.loss_total_gene)
         for loss_name, tf_loss in dict(self.tf_models.loss_dict_Gene, **self.tf_models.loss_dict_Disc).items():
             # skip losses whose weights are disabled
             weight = self.oparam.weights.get(loss_name, 1.0)
             if weight > 0.0:
-                self.summaries['scalar'][loss_name] = tf.summary.scalar(loss_name, tf.reduce_mean(tf_loss * weight))
+                self.summaries['scalar'][loss_name] = tf.compat.v1.summary.scalar(loss_name, tf.reduce_mean(input_tensor=tf_loss * weight))
 
         # metric summary
         for metric_name, tf_metric in self.tf_models.metrics.items():
             if metric_name.startswith('confusionmat'):
-                self.summaries['images'][metric_name] = tf.summary.image(metric_name,
+                self.summaries['images'][metric_name] = tf.compat.v1.summary.image(metric_name,
                                                             tf_summary_confusionmat(tf_metric,
                                                             numlabel=layer_modules.prog_ch,
                                                             tag=metric_name,
@@ -518,7 +518,7 @@ class FeedForwardNetworks(Model):
                         #                     numlabel=layer_modules.prog_ch,
                         #                     tag=metric_name)
             else:
-                self.summaries['scalar'][metric_name] = tf.summary.scalar(metric_name, tf_metric)
+                self.summaries['scalar'][metric_name] = tf.compat.v1.summary.scalar(metric_name, tf_metric)
 
         # # gradient summary
         # t_grad_var = self.tf_models.net.fake_imgs['rend']
@@ -549,8 +549,8 @@ class FeedForwardNetworks(Model):
         self.test_handle = self.sess.run(test_iter.string_handle())
         
         # create iterator switch
-        self.batch_handle = tf.placeholder(tf.string, shape=[])
-        batch_iter = tf.data.Iterator.from_string_handle(self.batch_handle, test_iter.output_types)
+        self.batch_handle = tf.compat.v1.placeholder(tf.string, shape=[])
+        batch_iter = tf.compat.v1.data.Iterator.from_string_handle(self.batch_handle, test_iter.output_types)
 
         # get effective batch
         curbatch = batch_iter.get_next()
@@ -578,9 +578,9 @@ class FeedForwardNetworks(Model):
 
     def train(self):
         """Train a network"""
-        self.step = tf.train.get_or_create_global_step()
+        self.step = tf.compat.v1.train.get_or_create_global_step()
 
-        lr = tf.train.exponential_decay(
+        lr = tf.compat.v1.train.exponential_decay(
             self.oparam.learning_rate,
             global_step=self.step,
             decay_steps=self.oparam.params.get('decay_steps', 50000), # 10k
@@ -591,10 +591,10 @@ class FeedForwardNetworks(Model):
         use_discr = self.oparam.params.get('discr', 1)
 
         def create_train_op(lr, loss, tvars, global_step):
-            optim = tf.train.AdamOptimizer(
+            optim = tf.compat.v1.train.AdamOptimizer(
                 lr, beta1=0.5, epsilon=1e-4)
             grads_and_vars = optim.compute_gradients(
-                loss, tvars, colocate_gradients_with_ops=True)
+                loss, tvars)
             return optim.apply_gradients(
                 grads_and_vars, global_step = global_step)
 
@@ -602,7 +602,7 @@ class FeedForwardNetworks(Model):
         base_deps = []
         runit_type = self.oparam.params.get('runit', 'relu')
         if 1: # just for now 'bn' in runit_type or 'in' in runit_type:
-            base_deps.extend(tf.get_collection(tf.GraphKeys.UPDATE_OPS))
+            base_deps.extend(tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS))
         else:
             base_deps = None
 
@@ -611,7 +611,7 @@ class FeedForwardNetworks(Model):
         if replay_worst:
             replay_deps = []
             net = self.tf_models.net
-            with tf.variable_scope('replay_worst', tf.AUTO_REUSE):
+            with tf.compat.v1.variable_scope('replay_worst', tf.compat.v1.AUTO_REUSE):
                 worst_type = self.oparam.params.get('worst_type', 'fg')
                 assert worst_type in net.acc, 'Invalid worst type'
                 # compute index of worst sample from current batch
@@ -638,9 +638,9 @@ class FeedForwardNetworks(Model):
         if self.oparam.params.get('use_hosyntax', 0):
             rendnet.load_weights(self.sess, self.oparam.params.get('render_type', 'dense'))
 
-        with tf.name_scope("generator_train"):
+        with tf.compat.v1.name_scope("generator_train"):
             gen_tvars = [
-                var for var in tf.trainable_variables()
+                var for var in tf.compat.v1.trainable_variables()
                 if (re.search("generator", var.name) != None)
             ]
             for var in gen_tvars:
@@ -668,9 +668,9 @@ class FeedForwardNetworks(Model):
                 dis_deps.extend(gen_deps)
             dis_deps.append(self.gen_train_op)
 
-            with tf.name_scope("discriminator_train"):
+            with tf.compat.v1.name_scope("discriminator_train"):
                 dis_tvars = [
-                    var for var in tf.trainable_variables()
+                    var for var in tf.compat.v1.trainable_variables()
                     if (re.search("discriminator", var.name) != None)
                 ]
                 for var in dis_tvars:
@@ -683,18 +683,18 @@ class FeedForwardNetworks(Model):
 
 
         # summaries for Tensorboard
-        self.summaries['scalar']['learning_rate'] = tf.summary.scalar('learning_rate', lr)
+        self.summaries['scalar']['learning_rate'] = tf.compat.v1.summary.scalar('learning_rate', lr)
         # images_summary = tf.summary.merge(self.summaries['images'].values())
-        loss_summary = tf.summary.merge(list(self.summaries['scalar'].values()))
-        val1_summary = tf.summary.merge(list(self.summaries['images'].values()) + [loss_summary])
-        val2_summary = tf.summary.merge_all()
+        loss_summary = tf.compat.v1.summary.merge(list(self.summaries['scalar'].values()))
+        val1_summary = tf.compat.v1.summary.merge(list(self.summaries['images'].values()) + [loss_summary])
+        val2_summary = tf.compat.v1.summary.merge_all()
 
-        train_writer = tf.summary.FileWriter(self.oparam.checkpoint_dir + '/train', self.sess.graph)
-        val_writer   = tf.summary.FileWriter(self.oparam.checkpoint_dir + '/val', self.sess.graph)
+        train_writer = tf.compat.v1.summary.FileWriter(self.oparam.checkpoint_dir + '/train', self.sess.graph)
+        val_writer   = tf.compat.v1.summary.FileWriter(self.oparam.checkpoint_dir + '/val', self.sess.graph)
 
         # Training start
-        tf.local_variables_initializer().run() # for metrics (accuracy)
-        tf.global_variables_initializer().run() # for network parameters
+        tf.compat.v1.local_variables_initializer().run() # for metrics (accuracy)
+        tf.compat.v1.global_variables_initializer().run() # for network parameters
         
         
         ## Save all the parameters
@@ -714,11 +714,11 @@ class FeedForwardNetworks(Model):
         while global_step < self.oparam.max_iter:
             try:
                 # Training the network
-                global_step = tf.train.global_step(self.sess, tf.train.get_global_step())
+                global_step = tf.compat.v1.train.global_step(self.sess, tf.compat.v1.train.get_global_step())
 
                 # save the intermediate model
                 if global_step != 0 and global_step % 10000 == 0:
-                    self.save(self.oparam.checkpoint_dir, tf.train.get_global_step())
+                    self.save(self.oparam.checkpoint_dir, tf.compat.v1.train.get_global_step())
 
                 # Status check with validation data
                 if global_step !=0 and global_step % 500 == 0:
@@ -814,7 +814,7 @@ class FeedForwardNetworks(Model):
         pass
 
     def test(self, name="test"):
-        tf.global_variables_initializer().run() # for network parameters
+        tf.compat.v1.global_variables_initializer().run() # for network parameters
         self.load(self.oparam.checkpoint_dir, True)
         
         import cv2

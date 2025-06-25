@@ -49,7 +49,7 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
         net.resi_imgs_noaug[key] = t_img
         if params.get('local_warping', 0):
             # local warp augmentation
-            with tf.variable_scope("input"):
+            with tf.compat.v1.variable_scope("input"):
                 net.imgs[key], _, __ = oper_random_geo_perturb(t_img, t_canonical_coords, coords_sigma)
         else:
             net.imgs[key] = t_img # no augmentation
@@ -67,13 +67,13 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
 
         if not params.get('istest', False): # if training
             noise_sigma = params.get('noise_sigma', 3./255.)
-            t_noise = tf.random_normal(tf.shape(t_img), stddev = noise_sigma)
+            t_noise = tf.random.normal(tf.shape(input=t_img), stddev = noise_sigma)
             net.resi_imgs[key] = net.resi_imgs[key] + t_noise
         
         net.resi_imgs_noaug[key] = net.resi_imgs_noaug[key] - value
 
     # create generator
-    with tf.variable_scope("generator"):
+    with tf.compat.v1.variable_scope("generator"):
 
         def encoder(t_input, name):
             return t_latent
@@ -88,8 +88,8 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
                 elif reduce_type == 'conv_skip':
                     t_logits = oper_img2prog_final_complex(t_resi_inp, params, 'img2prog')
                 elif reduce_type == 'tiling':
-                    with tf.name_scope('tiling'):
-                        t_input  = tf.space_to_depth(t_resi_inp, 8)
+                    with tf.compat.v1.name_scope('tiling'):
+                        t_input  = tf.compat.v1.space_to_depth(input=t_resi_inp, block_size=8)
                     t_logits = oper_img2img(t_input, prog_ch, params, 'img2prog')
                 elif reduce_type == 'avg_pooling':
                     t_logits = oper_img2img(t_resi_inp, prog_ch, params, 'img2prog')
@@ -103,7 +103,7 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
                 else:
                     raise ValueError('Invalid reduction type %s' % reduce_type)
 
-                t_instr = tf.argmax(t_logits, axis = 3, name = 'prediction')
+                t_instr = tf.argmax(input=t_logits, axis = 3, name = 'prediction')
                 net.latent[name] = t_logits
                 net.logits[name] = t_logits
                 net.instr[name]  = tf.expand_dims(t_instr, axis = 3)
@@ -142,10 +142,10 @@ def total_loss(net, t_inst_dict, params = dict()):
     t_bg_real = tf_background(t_inst_real, bg_type)
     if replay_worst:
         t_bg_wors = tf_background(t_inst_wors, bg_type)
-    t_synt_mask = tf.where(t_bg_synt, zeros, ones)
-    t_real_mask = tf.where(t_bg_real, zeros, ones)
+    t_synt_mask = tf.compat.v1.where(t_bg_synt, zeros, ones)
+    t_real_mask = tf.compat.v1.where(t_bg_real, zeros, ones)
     if replay_worst:
-        t_wors_mask = tf.where(t_bg_wors, zeros, ones)
+        t_wors_mask = tf.compat.v1.where(t_bg_wors, zeros, ones)
     bg_weight = params.get('bg_weight', 0.1)
     if isinstance(bg_weight, str):
         masked = bg_weight.startswith('mask_')
@@ -156,19 +156,19 @@ def total_loss(net, t_inst_dict, params = dict()):
         if replay_worst:
             t_wors_weight = tf_frequency_weight(t_inst_wors, bg_weight)
         if masked:
-            t_synt_weight = tf.where(t_bg_synt, 0.1 * t_synt_weight, t_synt_weight)
-            t_real_weight = tf.where(t_bg_real, 0.1 * t_real_weight, t_real_weight)
+            t_synt_weight = tf.compat.v1.where(t_bg_synt, 0.1 * t_synt_weight, t_synt_weight)
+            t_real_weight = tf.compat.v1.where(t_bg_real, 0.1 * t_real_weight, t_real_weight)
             if replay_worst:
-                t_wors_weight = tf.where(t_bg_wors, 0.1 * t_wors_weight, t_wors_weight)
+                t_wors_weight = tf.compat.v1.where(t_bg_wors, 0.1 * t_wors_weight, t_wors_weight)
     else:
-        t_synt_weight = tf.where(t_bg_synt, bg_weight * ones, ones)
-        t_real_weight = tf.where(t_bg_real, bg_weight * ones, ones)
+        t_synt_weight = tf.compat.v1.where(t_bg_synt, bg_weight * ones, ones)
+        t_real_weight = tf.compat.v1.where(t_bg_real, bg_weight * ones, ones)
         if replay_worst:
-            t_wors_weight = tf.where(t_bg_wors, bg_weight * ones, ones)
-    t_simg_weight = tf.image.resize_bilinear(t_synt_weight, [h, w])
-    t_rimg_weight = tf.image.resize_bilinear(t_real_weight, [h, w])
+            t_wors_weight = tf.compat.v1.where(t_bg_wors, bg_weight * ones, ones)
+    t_simg_weight = tf.image.resize(t_synt_weight, [h, w], method=tf.image.ResizeMethod.BILINEAR)
+    t_rimg_weight = tf.image.resize(t_real_weight, [h, w], method=tf.image.ResizeMethod.BILINEAR)
     if replay_worst:
-        t_wimg_weight = tf.image.resize_bilinear(t_wors_weight, [h, w])
+        t_wimg_weight = tf.image.resize(t_wors_weight, [h, w], method=tf.image.ResizeMethod.BILINEAR)
 
     # store background for debugging
     net.bg = dict()
@@ -219,7 +219,7 @@ def total_loss(net, t_inst_dict, params = dict()):
         for name, t_logits in net.logits.items():
             # t_label = tf.nn.softmax(t_logits)
             # @see https://arxiv.org/abs/1503.02531
-            t_label = tf.nn.softmax((t_logits - tf.reduce_mean(t_logits, axis = -1, keep_dims = True)) / 2)
+            t_label = tf.nn.softmax((t_logits - tf.reduce_mean(input_tensor=t_logits, axis = -1, keepdims = True)) / 2)
             print('**************rendnet.network ' + name)
             net.render[name], net.render_layers[name] = rendnet.network(
                 t_label, params, output_layers = True, input_is_softmax = True
@@ -234,7 +234,7 @@ def total_loss(net, t_inst_dict, params = dict()):
             net.resi_outs[name] = net.render[name]
 
     # generator and discriminator losses
-    with tf.variable_scope("loss"):
+    with tf.compat.v1.variable_scope("loss"):
 
         # instruction x-entropy
         # applied to {*real*} including {rend_real, tran_real, real_real, real, real_feedback...}

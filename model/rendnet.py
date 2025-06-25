@@ -18,9 +18,9 @@ from .layer_modules import prog_ch, tf_background, oper_prog2img
 def dense_prog2img(t_input, params, name = 'prog2img'):
     feat_ch = int(params.get('feat_ch', 64))
     convfn = lambda x,n: conv_pad(x, n)
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         features = []
-        with tf.variable_scope('decoder1', reuse = False):
+        with tf.compat.v1.variable_scope('decoder1', reuse = False):
             # pdb.set_trace()
             t_feat = runit(convfn(t_input, feat_ch))
             for i in range(3):
@@ -39,9 +39,9 @@ def resnet_prog2img(t_input, params, name = 'prog2img'):
     convfn = lambda x,n: conv2d(x, n, 3, 1)
     rblk = [resi, [[convfn, feat_ch], [runit], [convfn, feat_ch]]]
     rblk_num = int(params.get('rblk_num', 3))
-    with tf.name_scope('upsampling'):
+    with tf.compat.v1.name_scope('upsampling'):
         t_input = upsample(t_input, False, 8)
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_feat1 = NN('decoder1',
             [t_input, [convfn, feat_ch], [runit]])
         t_feat2 = NN('decoder2',
@@ -57,15 +57,15 @@ def network(t_label, params = dict(), output_layers = False, input_is_softmax = 
     render_type = params.get('render_type', 'dense')
     render_layers = []
 
-    with tf.variable_scope(scope_name):
+    with tf.compat.v1.variable_scope(scope_name):
         # convert to probabilistic one-hot input
         if input_is_softmax:
             t_input = t_label
         else:
           # must transform into one-hot probability distribution
-            with tf.name_scope('input_probability'):
+            with tf.compat.v1.name_scope('input_probability'):
                 t_onehot = tf.one_hot(tf.squeeze(t_label, axis = [3]), 17)
-                t_noise  = tf.random_uniform(t_onehot.shape,
+                t_noise  = tf.random.uniform(t_onehot.shape,
                     minval = -noise_level, maxval = noise_level, dtype = tf.float32) if noise_level > 0 else 0
                 t_input  = tf.nn.softmax(t_onehot + t_noise)
 
@@ -106,7 +106,7 @@ def load_weights(sess, render_type):
 
     # load network variables into session
     assignments = []
-    for var in tf.get_collection('trainable_variables'):
+    for var in tf.compat.v1.get_collection('trainable_variables'):
         if var.name not in var_data:
             continue
         value  = var_data[var.name]
@@ -146,15 +146,15 @@ def model_composited(t_labels_dict, t_imgs_dict, params = dict()):
         net.activations[name][target] = activations
 
     # create generator
-    with tf.variable_scope("generator"):
+    with tf.compat.v1.variable_scope("generator"):
 
         # store label as instruction (with extra singleton dimension)
         t_label = net.instr['instr_synt']
 
         # convert to probabilistic one-hot input
-        with tf.name_scope('input_probability'):
+        with tf.compat.v1.name_scope('input_probability'):
             t_onehot = tf.one_hot(tf.squeeze(t_label, axis = [3]), 17)
-            t_noise  =  tf.random_uniform(t_onehot.shape,
+            t_noise  =  tf.random.uniform(t_onehot.shape,
                 minval = -noise_level, maxval = noise_level, dtype = tf.float32) if noise_level > 0 else 0
             t_input  = tf.nn.softmax(t_onehot + t_noise)
 
@@ -178,22 +178,22 @@ def model_composited(t_labels_dict, t_imgs_dict, params = dict()):
 
 def conv2d(input_, output_dim, ks=3, s=2, stddev=0.02, padding='VALID', name="conv2d"):
 
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         padsz = math.ceil((ks - s) * 0.5)
-        input_ = tf.pad(input_,
-            tf.constant([[0, 0], [padsz, padsz], [padsz, padsz], [0, 0]]),
+        input_ = tf.pad(tensor=input_,
+            paddings=tf.constant([[0, 0], [padsz, padsz], [padsz, padsz], [0, 0]]),
             mode='SYMMETRIC')
         return slim.conv2d(input_, output_dim, ks, s, padding=padding,
             activation_fn=None,
-            weights_initializer=tf.truncated_normal_initializer(stddev=stddev)
+            weights_initializer=tf.compat.v1.truncated_normal_initializer(stddev=stddev)
         )
 def discriminator(image, params = dict(), name="discriminator"):
 
     feat_ch = int(params.get('feat_ch', 64))
     noise_sigma = params.get('noise_sigma', 3./255.)
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         # image is 256 x 256 x input_c_dim
-        image = image + tf.random_normal(tf.shape(image), stddev = noise_sigma)
+        image = image + tf.random.normal(tf.shape(input=image), stddev = noise_sigma)
 
         h0 = lrelu(conv2d(image, feat_ch, name='d_h0_conv'))
         # h0 is (128 x 128 x self.df_dim) 80
@@ -228,7 +228,7 @@ def total_loss(net, t_imgs_dict, params = dict()):
     zeros = tf.zeros_like(t_inst_synt, tf.float32)
     bg_type = params.get('bg_type', 'global')
     t_bg_synt = tf_background(t_inst_synt, bg_type)
-    t_synt_mask = tf.where(t_bg_synt, zeros, ones)
+    t_synt_mask = tf.compat.v1.where(t_bg_synt, zeros, ones)
     bg_weight = params.get('bg_weight', 0.1)
     if isinstance(bg_weight, str):
         masked = bg_weight.startswith('mask_')
@@ -236,10 +236,10 @@ def total_loss(net, t_imgs_dict, params = dict()):
             bg_weight = bg_weight[5:]
         t_synt_weight = tf_frequency_weight(t_inst_synt, bg_weight)
         if masked:
-            t_synt_weight = tf.where(t_bg_synt, 0.1 * t_synt_weight, t_synt_weight)
+            t_synt_weight = tf.compat.v1.where(t_bg_synt, 0.1 * t_synt_weight, t_synt_weight)
     else:
-        t_synt_weight = tf.where(t_bg_synt, bg_weight * ones, ones)
-    t_simg_weight = tf.image.resize_bilinear(t_synt_weight, [h, w])
+        t_synt_weight = tf.compat.v1.where(t_bg_synt, bg_weight * ones, ones)
+    t_simg_weight = tf.image.resize(t_synt_weight, [h, w], method=tf.image.ResizeMethod.BILINEAR)
 
     # store background for debugging
     net.bg = dict()
@@ -265,7 +265,7 @@ def total_loss(net, t_imgs_dict, params = dict()):
         net.vgg[curdataname] = net.vggobj.build(t_out)
 
     if params.get('discr_img', 0):
-        with tf.variable_scope("discriminator"):
+        with tf.compat.v1.variable_scope("discriminator"):
             # GT synthetic
             curdataname = 'rend'
             t_domain = discriminator(t_gt, params, name="image_domain")
@@ -275,7 +275,7 @@ def total_loss(net, t_imgs_dict, params = dict()):
             net.discr['image'][curdataname] = t_domain
 
     # generator and discriminator losses
-    with tf.variable_scope("loss"):
+    with tf.compat.v1.variable_scope("loss"):
 
         # adversarial loss for image
         discr_type = params.get('discr_type', 'l2')
@@ -293,7 +293,7 @@ def total_loss(net, t_imgs_dict, params = dict()):
         def fn_downsize(images):
             smoother = Smoother({'data':images}, 11, 2.)
             images = smoother.get_output()
-            return tf.image.resize_bilinear(images, [20,20])
+            return tf.image.resize(images, [20,20], method=tf.image.ResizeMethod.BILINEAR)
         
         # VGG perceptual loss
         # TODO: style loss (Gram) needs to be added

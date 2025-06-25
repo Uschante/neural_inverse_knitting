@@ -55,17 +55,17 @@ def main(argv):
         output_dir = '.'
 
     # create graph
-    t_input = tf.placeholder(tf.int32, shape = (batch_size, 20, 20, 1))
+    t_input = tf.compat.v1.placeholder(tf.int32, shape = (batch_size, 20, 20, 1))
     t_img = rendnet.network(t_input, {
         'render_type': render_type,
         'noise_level': noise_level
     })
 
     # run graph on inputs
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     config.allow_soft_placement=True
-    with tf.Session(config = config) as sess:
+    with tf.compat.v1.Session(config = config) as sess:
 
         # load rendering network into session
         rendnet.load_weights(sess, render_weights)
@@ -108,4 +108,4 @@ def main(argv):
     print('Done with %d files' % len(inputs))
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()

@@ -72,16 +72,16 @@ class Vgg19:
         self.fc6 = self.fc_layer(self.pool5, 25088, 4096, "fc6")  # 25088 = ((224 // (2 ** 5)) ** 2) * 512
         self.relu6 = tf.nn.relu(self.fc6)
         if train_mode is not None:
-            self.relu6 = tf.cond(train_mode, lambda: tf.nn.dropout(self.relu6, self.dropout), lambda: self.relu6)
+            self.relu6 = tf.cond(pred=train_mode, true_fn=lambda: tf.nn.dropout(self.relu6, 1 - (self.dropout)), false_fn=lambda: self.relu6)
         elif self.trainable:
-            self.relu6 = tf.nn.dropout(self.relu6, self.dropout)
+            self.relu6 = tf.nn.dropout(self.relu6, 1 - (self.dropout))
 
         self.fc7 = self.fc_layer(self.relu6, 4096, 4096, "fc7")
         self.relu7 = tf.nn.relu(self.fc7)
         if train_mode is not None:
-            self.relu7 = tf.cond(train_mode, lambda: tf.nn.dropout(self.relu7, self.dropout), lambda: self.relu7)
+            self.relu7 = tf.cond(pred=train_mode, true_fn=lambda: tf.nn.dropout(self.relu7, 1 - (self.dropout)), false_fn=lambda: self.relu7)
         elif self.trainable:
-            self.relu7 = tf.nn.dropout(self.relu7, self.dropout)
+            self.relu7 = tf.nn.dropout(self.relu7, 1 - (self.dropout))
 
         self.fc8 = self.fc_layer(self.relu7, 4096, 1000, "fc8")
 
@@ -90,23 +90,23 @@ class Vgg19:
         self.data_dict = None
 
     def avg_pool(self, bottom, name):
-        return tf.nn.avg_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
+        return tf.nn.avg_pool2d(input=bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
 
     def max_pool(self, bottom, name):
-        return tf.nn.max_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
+        return tf.nn.max_pool2d(input=bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
 
     def conv_layer(self, bottom, in_channels, out_channels, name):
-        with tf.variable_scope(name):
+        with tf.compat.v1.variable_scope(name):
             filt, conv_biases = self.get_conv_var(3, in_channels, out_channels, name)
 
-            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
+            conv = tf.nn.conv2d(input=bottom, filters=filt, strides=[1, 1, 1, 1], padding='SAME')
             bias = tf.nn.bias_add(conv, conv_biases)
             relu = tf.nn.relu(bias)
 
             return relu
 
     def fc_layer(self, bottom, in_size, out_size, name):
-        with tf.variable_scope(name):
+        with tf.compat.v1.variable_scope(name):
             weights, biases = self.get_fc_var(in_size, out_size, name)
 
             x = tf.reshape(bottom, [-1, in_size])
@@ -115,19 +115,19 @@ class Vgg19:
             return fc
 
     def get_conv_var(self, filter_size, in_channels, out_channels, name):
-        initial_value = tf.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.001)
+        initial_value = tf.random.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.001)
         filters = self.get_var(initial_value, name, 0, name + "_filters")
 
-        initial_value = tf.truncated_normal([out_channels], .0, .001)
+        initial_value = tf.random.truncated_normal([out_channels], .0, .001)
         biases = self.get_var(initial_value, name, 1, name + "_biases")
 
         return filters, biases
 
     def get_fc_var(self, in_size, out_size, name):
-        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.001)
+        initial_value = tf.random.truncated_normal([in_size, out_size], 0.0, 0.001)
         weights = self.get_var(initial_value, name, 0, name + "_weights")
 
-        initial_value = tf.truncated_normal([out_size], .0, .001)
+        initial_value = tf.random.truncated_normal([out_size], .0, .001)
         biases = self.get_var(initial_value, name, 1, name + "_biases")
 
         return weights, biases
@@ -151,7 +151,7 @@ class Vgg19:
         return var
 
     def save_npy(self, sess, npy_path="./vgg19-save.npy"):
-        assert isinstance(sess, tf.Session)
+        assert isinstance(sess, tf.compat.v1.Session)
 
         data_dict = {}
 

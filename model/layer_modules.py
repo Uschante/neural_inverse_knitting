@@ -16,8 +16,8 @@ from .tensorflow_vgg import custom_vgg19
 prog_ch = 17
 nch_res = arch_para.resblk_DimCh
 resblk = [resi, [[conv, nch_res], [runit], [conv, nch_res]]]
-fn_clipping01 = lambda tensor: tf.fake_quant_with_min_max_args(tensor, min=0., max=1., num_bits=8)
-fn_clipping005 = lambda tensor: tf.fake_quant_with_min_max_args(tensor, min=-0.5, max=0.5, num_bits=8)
+fn_clipping01 = lambda tensor: tf.quantization.fake_quant_with_min_max_args(tensor, min=0., max=1., num_bits=8)
+fn_clipping005 = lambda tensor: tf.quantization.fake_quant_with_min_max_args(tensor, min=-0.5, max=0.5, num_bits=8)
 fn_smooth_l1 = lambda tensor: tf.sqrt(tf.square(tensor + 1e-8))
 
 def oper_random_geo_perturb(t_imgs, t_canonical_coords, sigma=1., name='geopert_aug_layer'):
@@ -25,16 +25,16 @@ def oper_random_geo_perturb(t_imgs, t_canonical_coords, sigma=1., name='geopert_
     Applies random warping to image;
     outputs warped image, perturbed coordinates and flow field
     '''
-    t_pert_coord = t_canonical_coords + tf.random_normal(t_canonical_coords.get_shape(), stddev=sigma)
+    t_pert_coord = t_canonical_coords + tf.random.normal(t_canonical_coords.get_shape(), stddev=sigma)
     t_geo_pert_imgs, t_flow = oper_warping(t_imgs, t_canonical_coords, t_pert_coord) # also use parameters?
     return t_geo_pert_imgs, t_pert_coord, t_flow
 
 def noise(t_img, sigma):
-    return t_img + tf.random_normal(t_img.get_shape(), stddev=sigma)
+    return t_img + tf.random.normal(t_img.get_shape(), stddev=sigma)
 
 def noise_channel(t_img, sigma, num_ch = 1):
     B, h, w, _ = t_img.get_shape()
-    t_noise = tf.random_normal([B.value, h.value, w.value, num_ch], stddev=sigma)
+    t_noise = tf.random.normal([B.value, h.value, w.value, num_ch], stddev=sigma)
     return tf.concat([t_img, t_noise], axis = -1)
 
 def oper_syn2real(t_img, name='syn2real', sigma = 1, dropout_prob = 0.7):
@@ -42,7 +42,7 @@ def oper_syn2real(t_img, name='syn2real', sigma = 1, dropout_prob = 0.7):
     Translate a synthetic 160x160x1 image into a realistic one of same dimension.
     First encodes into 40x40xC features, which are then decoded with oper_syn2real_decoder
     '''
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         ndim_ch = arch_para.syn2real_DimCh
         t_feat = NN('encoder',
             [t_img,
@@ -66,7 +66,7 @@ def oper_syn2real_decoder(t_feat, name='syn2real'):
     C=nch_dim from last residual block of feature encoder
     '''
     print('decoding features:', t_feat.get_shape())
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         ndim_ch = arch_para.syn2real_DimCh
         t_fake = NN('decoder',
             [t_feat,                        # 40 x 40 x nch_res
@@ -85,7 +85,7 @@ def oper_programsyn(t_img, name='real2prog'):
     Encodes 160x160x1 image into 20x20xP logits without softmax,
     outputs those as well as the corresponding 20x20 argmax label prediction
     '''
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         ndim_ch = arch_para.programsyn_DimCh
         logit_act = NN('encoder',
             [t_img,
@@ -98,7 +98,7 @@ def oper_programsyn(t_img, name='real2prog'):
                 [conv,ndim_ch], [runit],     # 20 x 20
                 [conv,prog_ch,1,1]           # 20 x 20 x P
             ])
-        label_map = tf.argmax(logit_act, axis=3, name="prediction")
+        label_map = tf.argmax(input=logit_act, axis=3, name="prediction")
 
     return logit_act, tf.expand_dims(label_map, axis=3)
 
@@ -107,7 +107,7 @@ def oper_renderprog(t_logit, name='prog2real'):
     Converts 20x20xP logits into feature for shared decoder of syn2real
     and outputs the result of going through that shared decoder
     '''
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_feat = NN('translator',
             [t_logit,
                 [conv,nch_res], [runit],        # 20 x 20 x nch_res
@@ -129,7 +129,7 @@ def oper_warping(t_texture,
     Apply a differentiable local warping to an image
     and outputs the warped image
     '''
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         warped_image, flow_field = tf.contrib.image.sparse_image_warp(t_texture,
             t_src_landmark_yx, t_dst_landmark_yx,
             interpolation_order = order,
@@ -144,7 +144,7 @@ def oper_keypoint_sampler(t_img, t_landmark_anchor, name='keypoint_sampler'):
     '''
     batch_size, num_keypoints, _ = t_landmark_anchor.get_shape()
     K = int(math.sqrt(num_keypoints.value))
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         ndim_ch = arch_para.featext_for_warp_DimCh
         print('keypoints: ', num_keypoints.value)
 
@@ -188,7 +188,7 @@ def oper_keypoint_sampler(t_img, t_landmark_anchor, name='keypoint_sampler'):
 
         # infer keypoints
         batch_size = t_features.get_shape()[0]
-        weight_initializer = tf.variance_scaling_initializer(
+        weight_initializer = tf.compat.v1.variance_scaling_initializer(
             scale=1.0, mode='fan_in')
         # group F features -> Bx2Nx1x(F/2)  = reshape(, [B, 2*N, 1, -1])
         # infer coordinate -> Bx2Nx1x1      = [conv, 1, 1, 1, weight_initializer]
@@ -207,7 +207,7 @@ def oper_global_warping(t_img, name='global_warp'):
     Find and apply a global 6x2 warping to an image
     and output the warped image
     '''
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         # learnable delta transformation
         ndim_ch = arch_para.global_warp_DimCh
         xform_diff = NN('encoder',
@@ -240,7 +240,7 @@ def create_canonical_coordinates(batch_size, img_size, anchor_res):
         xv, yv = np.meshgrid(xx, xx)
         canonical_coords = np.concatenate([np.reshape(yv, (-1, 1)), np.reshape(xv, (-1, 1))], 1)
         t_canonical_coords = tf.convert_to_tensor(
-            np.expand_dims(canonical_coords, axis=0).astype(np.float32),
+            value=np.expand_dims(canonical_coords, axis=0).astype(np.float32),
             dtype=tf.float32,
             name='canonical_coord')
         return tf.tile(t_canonical_coords, [batch_size, 1, 1]), block_size
@@ -248,7 +248,7 @@ def create_canonical_coordinates(batch_size, img_size, anchor_res):
 ###################################################################################################
 
 def oper_collapse(t_resi, params = dict(), name='collapse'):
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_resi = global_pool(t_resi) # collapse into global information
         t_resi = tf.tile(t_resi, [1, 20, 20, 1]) # copy to each location
     return t_resi
@@ -275,7 +275,7 @@ def oper_img2prog(t_img, params = dict(), name='img2prog'):
         feat_ch2 = feat_ch
     resi_ch = int(params.get('resi_ch', 16)) # default => latent_ch = 100
     rblk = [resi, [[conv, feat_ch2], [runit, enc_runit], [conv, feat_ch]]]
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         latent_ch = prog_ch + resi_ch
         t_features, enc_layers = NN('encoder',
             [t_img,
@@ -305,7 +305,7 @@ def oper_img2prog(t_img, params = dict(), name='img2prog'):
                 skip_layer = enc_layers[i]
                 blk_size = skip_layer.shape[1].value // 20
                 print('Skip connection from %s | %s (blk=%d)' % (skip_layer.name, skip_layer.shape, blk_size))
-                feat_blk = tf.space_to_depth(skip_layer, blk_size)
+                feat_blk = tf.compat.v1.space_to_depth(input=skip_layer, block_size=blk_size)
                 if use_rskip: # reduce
                     feat_blk = conv(feat_blk, feat_ch)
                 elif use_sskip: # reduce with 1x1 convolution
@@ -322,7 +322,7 @@ def oper_img2prog(t_img, params = dict(), name='img2prog'):
                 [conv,latent_ch,1,1]         # 20 x 20 x R = (34 + f)
             ])
         logit_act = t_latent[:, :, :, 0:prog_ch]
-        label_map = tf.argmax(logit_act, axis=3, name="prediction")
+        label_map = tf.argmax(input=logit_act, axis=3, name="prediction")
 
         # global residual
         if params.get('resi_global', 0):
@@ -346,7 +346,7 @@ def oper_prog2img(t_latent, params = dict(), name='prog2img'):
         feat_ch2 = feat_ch
     rblk = [resi, [[conv, feat_ch2], [runit, dec_runit], [conv, feat_ch]]]
     rblk_num = int(params.get('rblk_num', arch_para.syn2real_Nresblk)) # def = 3
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_img = NN('decoder',
             [t_latent,                          # 20 x 20 x F = (34 + f)
                 [upsample],
@@ -383,7 +383,7 @@ def oper_img2prog_final(t_img, params = dict(), name='img2prog'):
         raise ValueError('Unsupported convolution type %s' % conv_type)
 
     rblk = [resi, [[conv_fn, feat_ch], [runit], [conv_fn, feat_ch]]]
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_act1 = NN('img2feat',
             [t_img, 
             [conv_fn, feat_ch, 2], [runit, 'in_relu'],
@@ -415,7 +415,7 @@ def oper_img2prog_final_complex(t_img, params = dict(), name='img2prog'):
         raise ValueError('Unsupported convolution type %s' % conv_type)
 
     rblk = [resi, [[conv_fn, feat_ch], [runit], [conv_fn, feat_ch]]]
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_act0, enc_feat = NN('img2feat',
             [t_img, 
             [conv_fn, feat_ch, 2], [runit, 'in_relu'],
@@ -427,8 +427,8 @@ def oper_img2prog_final_complex(t_img, params = dict(), name='img2prog'):
             skip_layer = enc_feat[i]
             blk_size = skip_layer.shape[1].value // 20
             print('Skip connection from %s | %s (blk=%d)' % (skip_layer.name, skip_layer.shape, blk_size))
-            with tf.variable_scope('skip_reduce/' + str(skip_layer.shape[1].value)):
-                feat_blk = tf.space_to_depth(skip_layer, blk_size)
+            with tf.compat.v1.variable_scope('skip_reduce/' + str(skip_layer.shape[1].value)):
+                feat_blk = tf.compat.v1.space_to_depth(input=skip_layer, block_size=blk_size)
                 feat_blk = conv_fn(feat_blk, feat_ch, 1, 1)
             feat_list.append(feat_blk)
         t_act1 = NN('skip2feat',
@@ -458,7 +458,7 @@ def oper_img2img_bottleneck(t_img, out_ch, params, name='img2img'):
         raise ValueError('Unsupported convolution type %s' % conv_type)
 
     rblk = [resi, [[conv_fn, feat_ch], [runit], [conv_fn, feat_ch]]]
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_act1 = NN('resnet1',
             [t_img, 
             [conv_fn, feat_ch, 2], [runit, 'in_relu'],
@@ -491,7 +491,7 @@ def oper_img2img(t_img, out_ch, params, name):
         raise ValueError('Unsupported convolution type %s' % conv_type)
 
     rblk = [resi, [[conv_fn, feat_ch], [runit], [conv_fn, feat_ch]]]
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_act1 = NN('resnet1',
             [t_img, [conv_fn, feat_ch], [runit, 'in_relu']])
         t_act2 = NN('resnet2',
@@ -518,7 +518,7 @@ def oper_img2img(t_img, out_ch, params, name):
         raise ValueError('Unsupported convolution type %s' % conv_type)
 
     rblk = [resi, [[conv_fn, feat_ch], [runit], [conv_fn, feat_ch]]]
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_act1 = NN('resnet1',
             [t_img, [conv_fn, feat_ch], [runit, 'in_relu']])
         t_act2 = NN('resnet2',
@@ -537,7 +537,7 @@ def oper_img2prog_simple(t_img, params = dict(), name='img2prog'):
     '''
     feat_ch = int(params.get('feat_ch', 64))
     rblk = [resi, [[conv, feat_ch], [runit], [conv, feat_ch]]]
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         t_logit_act = NN('encoder',
             [t_img,                         # 160 x 160 x D
                 [conv,feat_ch*2], [runit], [maxpool],  # 80 x 80 x D*2
@@ -547,7 +547,7 @@ def oper_img2prog_simple(t_img, params = dict(), name='img2prog'):
                 [conv,feat_ch], [runit], # 20 x 20 x D
                 [conv,prog_ch,1,1],         # 20 x 20 x P
             ])
-        label_map = tf.argmax(t_logit_act, axis=3, name="prediction")
+        label_map = tf.argmax(input=t_logit_act, axis=3, name="prediction")
         
     return t_logit_act, tf.expand_dims(label_map, axis=3)
 
@@ -560,7 +560,7 @@ def oper_adapter(t_latent, params = dict(), name='adapter'):
     latent_ch = t_latent.get_shape()[3].value
     rblk = [resi, [[conv, -1], [runit], [conv, -1]]]
     rblk_num = int(params.get('rblk_num', 2)) # def = 3
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         # global residual
         if params.get('resi_global', 0):
             t_inst = t_latent[:, :, :, 0:prog_ch]
@@ -589,7 +589,7 @@ def oper_generator(t_noise, t_label, params = dict(), name='resi_gen'):
     latent_ch = prog_ch + resi_ch
     rblk = [resi, [[conv, latent_ch], [runit], [conv, latent_ch]]]
     rblk_num = int(params.get('rblk_num', 2)) # def = 3
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
         # label to logits reshaping
         t_init_label = tf.one_hot(tf.squeeze(t_label, axis = [3]), prog_ch)
         # noise reshaping
@@ -597,7 +597,7 @@ def oper_generator(t_noise, t_label, params = dict(), name='resi_gen'):
             resi_num = 1
         else:
             resi_num = 20
-        weight_init = tf.variance_scaling_initializer(
+        weight_init = tf.compat.v1.variance_scaling_initializer(
             scale=1.0, mode='fan_in')
         t_init_noise = NN('noise',
             [t_noise,
@@ -618,8 +618,8 @@ def oper_generator(t_noise, t_label, params = dict(), name='resi_gen'):
 
 
 def wgan_loss(d_logit_real, d_logit_fake):
-    d_loss_real = tf.reduce_mean(d_logit_real)
-    d_loss_fake = tf.reduce_mean(d_logit_fake)
+    d_loss_real = tf.reduce_mean(input_tensor=d_logit_real)
+    d_loss_fake = tf.reduce_mean(input_tensor=d_logit_fake)
     d_loss = d_loss_fake - d_loss_real
     g_loss = -d_loss_fake
     return d_loss, g_loss
@@ -640,8 +640,8 @@ def oper_discriminator(t_input, reductions, num_domains, params = dict(), name='
     disc_bottleneck = params.get('disc_bottleneck', 1)
     noise_sigma = params.get('noise_sigma', 3./255.)
 
-    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
-        layers = [t_input + tf.random_normal(tf.shape(t_input), stddev = noise_sigma)]
+    with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
+        layers = [t_input + tf.random.normal(tf.shape(input=t_input), stddev = noise_sigma)]
         for i in range(reductions):
             # learn filters
             for j in range(disc_layers):
@@ -700,7 +700,7 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
         net.resi_imgs_noaug[key] = t_img
         if is_train and params.get('local_warping', 0):
             # local warp augmentation
-            with tf.variable_scope("input"):
+            with tf.compat.v1.variable_scope("input"):
                 net.imgs[key], _, __ = oper_random_geo_perturb(t_img, t_canonical_coords, coords_sigma)
         else:
             net.imgs[key] = t_img # no augmentation
@@ -718,7 +718,7 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
 
         if is_train: # if training
             noise_sigma = params.get('noise_sigma', 3./255.)
-            t_noise = tf.random_normal(tf.shape(t_img), stddev = noise_sigma)
+            t_noise = tf.random.normal(tf.shape(input=t_img), stddev = noise_sigma)
             net.resi_imgs[key] = net.resi_imgs[key] + t_noise
         
         net.resi_imgs_noaug[key] = net.resi_imgs_noaug[key] - value
@@ -727,7 +727,7 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
     fakes = filter(lambda name: name != 'real' and name != 'unsup' and name != 'worst', t_imgs_dict.keys())
 
     # create generator
-    with tf.variable_scope("generator"):
+    with tf.compat.v1.variable_scope("generator"):
 
         def encoder(t_input, name):
             print('**************oper_img2prog')
@@ -781,7 +781,7 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
                     net.latent[name + '_real'] = t_latent
                     net.logits[name + '_real'] = t_logits
                     net.instr[name + '_real'] = tf.expand_dims(
-                        tf.argmax(t_logits, axis=3, name="prediction"),
+                        tf.argmax(input=t_logits, axis=3, name="prediction"),
                         axis = 3)
                     store_act(name, 'adapter', activations)
 
@@ -807,9 +807,9 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
                 # generator
                 with runits() as activations:
                     if noise_uniform:
-                        t_noise = tf.random_uniform(noise_shape, -noise_uniform, noise_uniform)
+                        t_noise = tf.random.uniform(noise_shape, -noise_uniform, noise_uniform)
                     else:
-                        t_noise = tf.random_normal(noise_shape, stddev = noise_sigma)
+                        t_noise = tf.random.normal(noise_shape, stddev = noise_sigma)
                     t_latent = oper_generator(t_noise, t_label, params)
                     t_logits = t_latent[:, :, :, 0:prog_ch]
                     short_name = name.replace('instr_', '')
@@ -817,7 +817,7 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
                     net.latent[name_gen] = t_latent
                     net.logits[name_gen] = t_logits
                     net.instr[name_gen] = tf.expand_dims(
-                        tf.argmax(t_logits, axis=3, name="prediction"),
+                        tf.argmax(input=t_logits, axis=3, name="prediction"),
                         axis = 3)
                     store_act(short_name, 'generator', activations)
 
@@ -835,10 +835,10 @@ def model_composited(t_imgs_dict, t_labels_dict, params = dict()):
 
 def translate_tensor(h, dx, dy):
     h = tf.pad(
-        h,
-        tf.constant([[0, 0], [1, 1], [1, 1]]),
+        tensor=h,
+        paddings=tf.constant([[0, 0], [1, 1], [1, 1]]),
         mode='SYMMETRIC')
-    imsz = tf.shape(h)
+    imsz = tf.shape(input=h)
     return h[:,(1+dy):(imsz[1]+dy-1),(1+dx):(imsz[2]+dx-1)]
 
 def tf_MILloss_xentropy(labels, logits, weight=None):
@@ -881,17 +881,17 @@ def tf_MILloss_xentropy(labels, logits, weight=None):
 
     entropy_tensor = tf.stack(lst_entropy, axis=3)[:,1:-1,1:-1,:] # BxHxWxD
     print('xentropy dim: {}'.format(entropy_tensor.get_shape()))
-    entropy_disp = tf.reduce_mean(entropy_tensor,axis=[1,2], keepdims=True) # spatial collapsing
+    entropy_disp = tf.reduce_mean(input_tensor=entropy_tensor,axis=[1,2], keepdims=True) # spatial collapsing
     # entropy_disp = tf.Print(entropy_disp, [entropy_disp, tf.reduce_min(entropy_disp)])
     print('xentropy dim: {}'.format(entropy_disp.get_shape()))
-    total_entropy = tf.reduce_min(entropy_disp, axis=3, keepdims=True) # take minimum loss over displacement
+    total_entropy = tf.reduce_min(input_tensor=entropy_disp, axis=3, keepdims=True) # take minimum loss over displacement
     print('xentropy dim: {}'.format(total_entropy.get_shape()))
     # total_entropy = tf.Print(total_entropy, [tf.reduce_mean(total_entropy), tf.reduce_max(total_entropy)])
     return total_entropy
 
 
 def tf_MILloss_xentropy2(labels, logits, weight=None):
-    pooled_logits = tf.layers.max_pooling2d(logits,
+    pooled_logits = tf.compat.v1.layers.max_pooling2d(logits,
                                             pool_size=3,
                                             strides=1,
                                             padding='same')
@@ -926,18 +926,18 @@ def tf_accuracy(labels, instrs, mask = None):
     instrs = tf.cast(instrs, tf.int32)
     # print('accuracy: ', labels.get_shape(), instrs.get_shape(), mask.get_shape())
     # compute accuracy
-    total = tf.reduce_sum(mask)
-    matches = tf.where(tf.equal(labels, instrs), mask, tf.zeros_like(labels, tf.float32))
+    total = tf.reduce_sum(input_tensor=mask)
+    matches = tf.compat.v1.where(tf.equal(labels, instrs), mask, tf.zeros_like(labels, tf.float32))
     # matches = debug(matches, 'matches')
-    count = tf.reduce_sum(matches)
+    count = tf.reduce_sum(input_tensor=matches)
     return count / tf.maximum(total, tf.ones_like(total, tf.float32))
 
 
 def tf_2daccuracy(labels, instrs, mask):
     # regularize arguments
-    matches = tf.where(tf.equal(labels, instrs), mask, tf.zeros_like(labels, tf.float32))
+    matches = tf.compat.v1.where(tf.equal(labels, instrs), mask, tf.zeros_like(labels, tf.float32))
     matches = matches[:,1:-1,1:-1]
-    total = tf.reduce_sum(mask[:,1:-1,1:-1], axis=[1,2], keepdims=True) # per image
+    total = tf.reduce_sum(input_tensor=mask[:,1:-1,1:-1], axis=[1,2], keepdims=True) # per image
     return matches/tf.maximum(total, tf.ones_like(total, tf.float32)) # BxHxW
 
 
@@ -963,9 +963,9 @@ def tf_MILloss_accuracy(labels, instrs, mask=None):
         lst_accuracy.append(matches)
     
     accuracy_tensor = tf.stack(lst_accuracy, axis=3) # BxHxWxD
-    accuracy = tf.reduce_sum(accuracy_tensor, axis=[1,2], keepdims=True) #Bx1x1xD
-    accuracy = tf.reduce_max(accuracy, axis=3, keepdims=True) #Bx1x1x1
-    return tf.reduce_mean(accuracy), accuracy
+    accuracy = tf.reduce_sum(input_tensor=accuracy_tensor, axis=[1,2], keepdims=True) #Bx1x1xD
+    accuracy = tf.reduce_max(input_tensor=accuracy, axis=3, keepdims=True) #Bx1x1x1
+    return tf.reduce_mean(input_tensor=accuracy), accuracy
 
 def tf_background(t_inst, btype = 'global'):
     """
@@ -988,8 +988,8 @@ def tf_global_background(t_inst):
         t_label = tf.slice(t_inst, [i, 0, 0, 0], [1, 20, 20, 1]) # t_inst[i, :, :]
         t_samples = tf.reshape(t_label, [-1])
         t_unique, _, t_count = tf.unique_with_counts(t_samples)
-        t_max_occ = tf.reduce_max(t_count)
-        t_bg_inst = tf.gather(t_unique, tf.where(tf.equal(t_count, t_max_occ)))
+        t_max_occ = tf.reduce_max(input_tensor=t_count)
+        t_bg_inst = tf.gather(t_unique, tf.compat.v1.where(tf.equal(t_count, t_max_occ)))
         t_bg_inst = t_bg_inst[0] # tf.squeeze only works if there's no tie between max occurrences
         # t_bg_inst = debug(t_bg_inst, 'BG_Inst', tf.int32)
         # t_bg_inst = t_bg_inst[0]
@@ -999,8 +999,8 @@ def tf_global_background(t_inst):
         # - all 1 when only one instruction in label (min == max)
         # - all 0 otherwise
         t_single = tf.logical_and(
-            tf.equal(t_label, tf.reduce_min(t_samples)),
-            tf.equal(t_label, tf.reduce_max(t_samples))
+            tf.equal(t_label, tf.reduce_min(input_tensor=t_samples)),
+            tf.equal(t_label, tf.reduce_max(input_tensor=t_samples))
         )
         t_bg_mask = tf.logical_and(t_bg_mask, tf.logical_not(t_single)) # if single => no background
         bgs.append(t_bg_mask)
@@ -1011,8 +1011,8 @@ def tf_local_background(t_inst):
     Background = when neighbors are all the same as instruction
     """
     # compute local background
-    max_inst = tf.nn.max_pool(t_inst, [1, 3, 3, 1], [1, 1, 1, 1], 'SAME')
-    min_inst = -tf.nn.max_pool(-t_inst, [1, 3, 3, 1], [1, 1, 1, 1], 'SAME')
+    max_inst = tf.nn.max_pool2d(input=t_inst, ksize=[1, 3, 3, 1], strides=[1, 1, 1, 1], padding='SAME')
+    min_inst = -tf.nn.max_pool2d(input=-t_inst, ksize=[1, 3, 3, 1], strides=[1, 1, 1, 1], padding='SAME')
     t_local_bg = tf.logical_and(
         tf.equal(max_inst, t_inst),
         tf.equal(min_inst, t_inst)
@@ -1020,8 +1020,8 @@ def tf_local_background(t_inst):
     # check that the instruction isn't fully background
     t_samples = tf.reshape(t_inst, [t_inst.shape[0], -1])
     t_not_single = tf.logical_or(
-        tf.not_equal(t_inst, tf.reshape(tf.reduce_min(t_samples, axis = 1), [-1, 1, 1, 1])),
-        tf.not_equal(t_inst, tf.reshape(tf.reduce_max(t_samples, axis = 1), [-1, 1, 1, 1]))
+        tf.not_equal(t_inst, tf.reshape(tf.reduce_min(input_tensor=t_samples, axis = 1), [-1, 1, 1, 1])),
+        tf.not_equal(t_inst, tf.reshape(tf.reduce_max(input_tensor=t_samples, axis = 1), [-1, 1, 1, 1]))
     )
     return tf.logical_and(t_local_bg, t_not_single)
 
@@ -1049,7 +1049,7 @@ def tf_per_batch_frequency_weight(t_inst, weight_type = 'linear', factor = 1.0):
     t_inst: BxHxWx1
     """
     t_onehot = tf.one_hot(tf.squeeze(t_inst),depth=prog_ch,dtype=tf.float32)
-    t_hist = tf.reduce_sum(t_onehot, axis = [0,1,2]) # D dim. vec
+    t_hist = tf.reduce_sum(input_tensor=t_onehot, axis = [0,1,2]) # D dim. vec
 #     t_hist = t_hist/tf.reduce_sum(t_hist) # range [0,1]
     weight = tf.maximum(factor, tf.minimum(2.5, 20./(t_hist+1)))
     return tf.expand_dims(tf.gather_nd(weight, t_inst), -1)
@@ -1086,10 +1086,10 @@ def total_loss(net, t_inst_dict, params = dict()):
     t_bg_real = tf_background(t_inst_real, bg_type)
     if replay_worst:
         t_bg_wors = tf_background(t_inst_wors, bg_type)
-    t_synt_mask = tf.where(t_bg_synt, zeros, ones)
-    t_real_mask = tf.where(t_bg_real, zeros, ones)
+    t_synt_mask = tf.compat.v1.where(t_bg_synt, zeros, ones)
+    t_real_mask = tf.compat.v1.where(t_bg_real, zeros, ones)
     if replay_worst:
-        t_wors_mask = tf.where(t_bg_wors, zeros, ones)
+        t_wors_mask = tf.compat.v1.where(t_bg_wors, zeros, ones)
     bg_weight = params.get('bg_weight', 0.1)
     if isinstance(bg_weight, str):
         masked = bg_weight.startswith('mask_')
@@ -1100,19 +1100,19 @@ def total_loss(net, t_inst_dict, params = dict()):
         if replay_worst:
             t_wors_weight = tf_frequency_weight(t_inst_wors, bg_weight)
         if masked:
-            t_synt_weight = tf.where(t_bg_synt, 0.1 * t_synt_weight, t_synt_weight)
-            t_real_weight = tf.where(t_bg_real, 0.1 * t_real_weight, t_real_weight)
+            t_synt_weight = tf.compat.v1.where(t_bg_synt, 0.1 * t_synt_weight, t_synt_weight)
+            t_real_weight = tf.compat.v1.where(t_bg_real, 0.1 * t_real_weight, t_real_weight)
             if replay_worst:
-                t_wors_weight = tf.where(t_bg_wors, 0.1 * t_wors_weight, t_wors_weight)
+                t_wors_weight = tf.compat.v1.where(t_bg_wors, 0.1 * t_wors_weight, t_wors_weight)
     else:
-        t_synt_weight = tf.where(t_bg_synt, bg_weight * ones, ones)
-        t_real_weight = tf.where(t_bg_real, bg_weight * ones, ones)
+        t_synt_weight = tf.compat.v1.where(t_bg_synt, bg_weight * ones, ones)
+        t_real_weight = tf.compat.v1.where(t_bg_real, bg_weight * ones, ones)
         if replay_worst:
-            t_wors_weight = tf.where(t_bg_wors, bg_weight * ones, ones)
-    t_simg_weight = tf.image.resize_bilinear(t_synt_weight, [h, w])
-    t_rimg_weight = tf.image.resize_bilinear(t_real_weight, [h, w])
+            t_wors_weight = tf.compat.v1.where(t_bg_wors, bg_weight * ones, ones)
+    t_simg_weight = tf.image.resize(t_synt_weight, [h, w], method=tf.image.ResizeMethod.BILINEAR)
+    t_rimg_weight = tf.image.resize(t_real_weight, [h, w], method=tf.image.ResizeMethod.BILINEAR)
     if replay_worst:
-        t_wimg_weight = tf.image.resize_bilinear(t_wors_weight, [h, w])
+        t_wimg_weight = tf.image.resize(t_wors_weight, [h, w], method=tf.image.ResizeMethod.BILINEAR)
 
     # store background for debugging
     net.bg = dict()
@@ -1172,14 +1172,14 @@ def total_loss(net, t_inst_dict, params = dict()):
 
     def wgan_interp_input(net, nbatch):
         net.resi_aug_wgan = dict()
-        alpha = tf.random_uniform([nbatch, 1, 1, 1], 0.0, 1.0)
+        alpha = tf.random.uniform([nbatch, 1, 1, 1], 0.0, 1.0)
         net.resi_imgs_noaug['real']
         interpolated = alpha * net.resi_imgs_noaug['real'] + \
                        (1 - alpha) * net.resi_outs['real']
         net.resi_aug_wgan['real'] = interpolated
 
     if params.get('discr_img', 0) or params.get('discr_instr', 0) or params.get('discr_latent', 0):
-        with tf.variable_scope("discriminator"):
+        with tf.compat.v1.variable_scope("discriminator"):
             # default = 1 = binary <real | fake>
             # other = CatGAN
             # - 3: real | rend | tran
@@ -1248,13 +1248,13 @@ def total_loss(net, t_inst_dict, params = dict()):
                         with runits('lrelu'):
                             t_domain = oper_discriminator(t_resi, 3, domains, params, 'image_domain')
                         # tf.gradients returns a list of sum(dy/dx) for each x in xs.
-                        gradients = tf.gradients(t_domain, [t_resi, ], name="WGAN_grad")[0]
+                        gradients = tf.gradients(ys=t_domain, xs=[t_resi, ], name="WGAN_grad")[0]
                         net.discr['wgan_grad'][name] = gradients
 
 
             
     # generator and discriminator losses
-    with tf.variable_scope("loss"):
+    with tf.compat.v1.variable_scope("loss"):
 
         # VGG perceptual loss
         # TODO: style loss (Gram) needs to be added
@@ -1355,7 +1355,7 @@ def total_loss(net, t_inst_dict, params = dict()):
                         loss_gen = tf_loss_with_select(t_discr, tf.ones_like(t_discr), which_loss = discr_type)
                         loss_dict_Gene['loss_G_image/' + name] = loss_gen if name != 'real' else loss_gen*5.
                 else: # wgan
-                    loss_dis = tf.reduce_mean(t_discr)
+                    loss_dis = tf.reduce_mean(input_tensor=t_discr)
                     if name == 'gt_real':
                         loss_dict_Disc['loss_D_image/' + name] = -loss_dis
                     else:
@@ -1364,7 +1364,7 @@ def total_loss(net, t_inst_dict, params = dict()):
 
             if 'wgan_grad' in net.discr.keys(): # wgan
                 for name, t_discr in net.discr['wgan_grad'].items():
-                    grad_l2 = tf.sqrt(tf.reduce_sum(tf.square(t_discr), axis=[1, 2, 3]))
+                    grad_l2 = tf.sqrt(tf.reduce_sum(input_tensor=tf.square(t_discr), axis=[1, 2, 3]))
                     grad_penalty = tf.square(grad_l2 - 1.0)
                     loss_dict_Disc['loss_D_image/wgan_grad'] = params.get('gp_lambda', 10.)*grad_penalty
         
@@ -1424,13 +1424,13 @@ def total_loss(net, t_inst_dict, params = dict()):
         
         def GramSchmidtLoss(latent):
             # latent: BxHxWxC (0-(P-1): instruction, P-: residual latent)
-            t_sz = tf.shape(latent)
+            t_sz = tf.shape(input=latent)
             # print(latent.get_shape())
             # print(t_sz)
             
             mat = tf.reshape(latent, [t_sz[0], -1, t_sz[-1]]) # tf.concat
-            _, R = tf.qr(mat, full_matrices=False) # BxHWxC => BxCxC
-            abscorr = tf.reduce_mean(tf.abs(R[:, 0:prog_ch, prog_ch:]))
+            _, R = tf.linalg.qr(mat, full_matrices=False) # BxHWxC => BxCxC
+            abscorr = tf.reduce_mean(input_tensor=tf.abs(R[:, 0:prog_ch, prog_ch:]))
             return abscorr
 
         # disentanglement loss
@@ -1476,7 +1476,7 @@ def total_loss(net, t_inst_dict, params = dict()):
         def fn_downsize(images):
             smoother = Smoother({'data':images}, 11, 2.)
             images = smoother.get_output()
-            return tf.image.resize_bilinear(images, [40,40])
+            return tf.image.resize(images, [40,40], method=tf.image.ResizeMethod.BILINEAR)
         fn_normalize = tf.identity
 
         if params.get('bloss_unsup', 0):
@@ -1613,7 +1613,7 @@ def syntax_loss(instr, params, binary = False):
             # t_count = debug(t_count, 't_count')
             t_bad = tf.ones_like(t_count, tf.float32) * syntax_weight
             t_good = tf.zeros_like(t_count, tf.float32)
-            t_loss = tf.where(t_count < 1.0, t_bad, t_good)
+            t_loss = tf.compat.v1.where(t_count < 1.0, t_bad, t_good)
         else:
             # use logits
             #   loss = ||src x P x trg||_F
@@ -1630,11 +1630,11 @@ def syntax_loss(instr, params, binary = False):
         losses.append(t_loss)
     t_loss = tf.concat(losses, axis = 0)
     if params.get('syntax_sum', 0):
-        t_loss = tf.reduce_sum(t_loss)
+        t_loss = tf.reduce_sum(input_tensor=t_loss)
     return t_loss
 
 def debug(x, name = 'debug', dtype = tf.float32):
-    return tf.py_func(lambda t: check_tensor(t, name), [x], dtype)
+    return tf.compat.v1.py_func(lambda t: check_tensor(t, name), [x], dtype)
 
 def check_tensor(x, name):
     print(name)
@@ -1657,7 +1657,7 @@ def content_layer_loss(p, x, content_loss_function = 1):
         K = 1. / (N * M)
     elif content_loss_function == 3:
         K = 1. / 2.
-    loss = K * tf.reduce_sum(tf.pow((x - p), 2))
+    loss = K * tf.reduce_sum(input_tensor=tf.pow((x - p), 2))
     return loss
 
 
@@ -1671,9 +1671,9 @@ def style_layer_loss(X, Y, power = 2):
         Gx = gram_matrix(x, M, N)
         Gy = gram_matrix(y, M, N)
         if power == 2:
-            loss = (1. / (4 * N**2 * M**2)) * tf.reduce_sum(tf.pow((Gx - Gy), 2))
+            loss = (1. / (4 * N**2 * M**2)) * tf.reduce_sum(input_tensor=tf.pow((Gx - Gy), 2))
         elif power == 1:
-            loss = tf.reduce_mean(tf.abs(Gx - Gy)) / 2.
+            loss = tf.reduce_mean(input_tensor=tf.abs(Gx - Gy)) / 2.
         else:
             raise ValueError('Style loss does not support power %d' % power)
         return loss
@@ -1683,5 +1683,5 @@ def style_layer_loss(X, Y, power = 2):
 
 def gram_matrix(x, area, depth):
     F = tf.reshape(x, (area, depth))
-    G = tf.matmul(tf.transpose(F), F)
+    G = tf.matmul(tf.transpose(a=F), F)
     return G

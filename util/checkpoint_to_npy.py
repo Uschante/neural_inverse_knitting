@@ -20,15 +20,15 @@ def main(_):
         return
 
     # load metagraph and its weights
-    meta = tf.train.import_meta_graph(FLAGS.input + '.meta',
+    meta = tf.compat.v1.train.import_meta_graph(FLAGS.input + '.meta',
         clear_devices=True)
-    var_list = tf.get_collection('trainable_variables')
+    var_list = tf.compat.v1.get_collection('trainable_variables')
 
     # extract variable values
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     config.allow_soft_placement=True
-    with tf.Session(config = config) as sess:
+    with tf.compat.v1.Session(config = config) as sess:
         meta.restore(sess, FLAGS.input)
         val_list = sess.run(var_list)
 
@@ -49,4 +49,4 @@ def main(_):
     print('Saved %s' % fname)
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()

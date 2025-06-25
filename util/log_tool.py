@@ -8,10 +8,10 @@ import matplotlib
 import io
 import textwrap
 
-fn_clipping01 = lambda tensor: tf.fake_quant_with_min_max_args(tensor, min=0., max=1., num_bits=8)
-fn_shift_to_min0 = lambda tensor: (tensor - tf.reduce_min(tensor, axis=[1,2], keepdims=True))
-fn_normalize_by_max = lambda tensor: tf.divide(tensor, tf.reduce_max(tf.abs(tensor), axis=[1,2,3], keepdims=True) + 1e-10)
-fn_normalize_by_max_per_ch = lambda tensor: tf.divide(tensor, tf.reduce_max(tf.abs(tensor), axis=[1,2], keepdims=True) + 1e-10)
+fn_clipping01 = lambda tensor: tf.quantization.fake_quant_with_min_max_args(tensor, min=0., max=1., num_bits=8)
+fn_shift_to_min0 = lambda tensor: (tensor - tf.reduce_min(input_tensor=tensor, axis=[1,2], keepdims=True))
+fn_normalize_by_max = lambda tensor: tf.divide(tensor, tf.reduce_max(input_tensor=tf.abs(tensor), axis=[1,2,3], keepdims=True) + 1e-10)
+fn_normalize_by_max_per_ch = lambda tensor: tf.divide(tensor, tf.reduce_max(input_tensor=tf.abs(tensor), axis=[1,2], keepdims=True) + 1e-10)
 
 
 
@@ -25,12 +25,12 @@ def tf_total_var_summary(name_pattern,
 
     if black_list_keyword is None:
         list_var = [
-            v for v in tf.trainable_variables()
+            v for v in tf.compat.v1.trainable_variables()
             if re.search(name_pattern, v.name)
         ]
     else:
         list_var = [
-            v for v in tf.trainable_variables()
+            v for v in tf.compat.v1.trainable_variables()
             if re.search(name_pattern, v.name)
             and not re.search(black_list_keyword, v.name)
         ]
@@ -61,37 +61,37 @@ def tf_img_summary(img,
     elif img.get_shape()[3] > 3:
         img = img[:, :, :, :3]
 
-    tf.summary.image(name, img, max_outputs=max_outputs)
+    tf.compat.v1.summary.image(name, img, max_outputs=max_outputs)
 
 
 def tf_variable_summary(var, name, bmeanstd=True, bminmax=True, bhist=True):
     """Attach a lot of summaries to a Tensor (for TensorBoard visualization)."""
-    with tf.name_scope(name + '/summaries'):
+    with tf.compat.v1.name_scope(name + '/summaries'):
         summaries = []
         if bmeanstd:
-            mean = tf.reduce_mean(var)
-            s = tf.summary.scalar('mean', mean)
+            mean = tf.reduce_mean(input_tensor=var)
+            s = tf.compat.v1.summary.scalar('mean', mean)
             summaries.append(s)
 
-            s = tf.summary.scalar('meanabs', tf.reduce_mean(tf.abs(var)))
+            s = tf.compat.v1.summary.scalar('meanabs', tf.reduce_mean(input_tensor=tf.abs(var)))
             summaries.append(s)
 
-            with tf.name_scope('stddev'):
-                stddev = tf.sqrt(tf.reduce_mean(tf.square(var - mean)))
-            s = tf.summary.scalar('stddev', stddev)
+            with tf.compat.v1.name_scope('stddev'):
+                stddev = tf.sqrt(tf.reduce_mean(input_tensor=tf.square(var - mean)))
+            s = tf.compat.v1.summary.scalar('stddev', stddev)
             summaries.append(s)
 
         if bminmax:
-            s = tf.summary.scalar('max', tf.reduce_max(var))
+            s = tf.compat.v1.summary.scalar('max', tf.reduce_max(input_tensor=var))
             summaries.append(s)
-            s = tf.summary.scalar('min', tf.reduce_min(var))
+            s = tf.compat.v1.summary.scalar('min', tf.reduce_min(input_tensor=var))
             summaries.append(s)
 
         if bhist:
-            s = tf.summary.histogram('histogram', var)
+            s = tf.compat.v1.summary.histogram('histogram', var)
             summaries.append(s)
 
-        return tf.summary.merge(summaries)
+        return tf.compat.v1.summary.merge(summaries)
 
 @tfmpl.figure_tensor
 def tf_keypoint_summary(points):
@@ -203,7 +203,7 @@ def _plot_confusion_matrix(cm, labels):
     return image
 
 def tf_summary_confusionmat(t_confusionmat, numlabel, tag='confusion matrix'):
-    t_img_confmat = tf.py_func(lambda x: _plot_confusion_matrix(x, 
+    t_img_confmat = tf.compat.v1.py_func(lambda x: _plot_confusion_matrix(x, 
                                                         [str(x) for x in np.arange(numlabel)]), 
                                 [t_confusionmat], 
                                 [tf.uint8])
@@ -213,15 +213,15 @@ def tf_summary_confusionmat(t_confusionmat, numlabel, tag='confusion matrix'):
 
 
 def comp_confusionmat(predictions_batch, labels_batch, num_classes = None, normalized_row = True, name=None):
-    with tf.variable_scope('metrics/confusion' + name, tf.AUTO_REUSE):
+    with tf.compat.v1.variable_scope('metrics/confusion' + name, tf.compat.v1.AUTO_REUSE):
 
         # confusion matrix
-        confusion_batch = tf.confusion_matrix(labels=tf.reshape(labels_batch, [-1]), 
+        confusion_batch = tf.math.confusion_matrix(labels=tf.reshape(labels_batch, [-1]), 
                                               predictions=tf.reshape(predictions_batch, [-1]),
                                               num_classes=num_classes)
         confusion_batch = tf.cast(confusion_batch, dtype=tf.float32)
         if normalized_row:
-            confusion_batch = confusion_batch/(tf.reduce_sum(confusion_batch, axis=1, keepdims=True)+1e-13)
+            confusion_batch = confusion_batch/(tf.reduce_sum(input_tensor=confusion_batch, axis=1, keepdims=True)+1e-13)
 
         # if moving_average:
 
@@ -234,8 +234,8 @@ def comp_confusionmat(predictions_batch, labels_batch, num_classes = None, norma
         # accumulative
         confusion_matrix = tf.Variable(tf.zeros([num_classes, num_classes], dtype=tf.float32),
                                        name='acc_conf_mat', trainable=False)
-        confusion_matrix = tf.assign(confusion_matrix, 
+        confusion_matrix = tf.compat.v1.assign(confusion_matrix, 
                                     0.95*confusion_matrix + 0.05*confusion_batch)
         if normalized_row:
-            confusion_matrix = confusion_matrix/(tf.reduce_sum(confusion_matrix, axis=1, keepdims=True)+1e-13)
+            confusion_matrix = confusion_matrix/(tf.reduce_sum(input_tensor=confusion_matrix, axis=1, keepdims=True)+1e-13)
     return confusion_matrix

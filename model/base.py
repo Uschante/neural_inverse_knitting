@@ -39,7 +39,7 @@ class Model(object):
 
 
     def save(self, checkpoint_dir, global_step=None):
-        self.saver = tf.train.Saver(max_to_keep=5)
+        self.saver = tf.compat.v1.train.Saver(max_to_keep=5)
 
         print(" [*] Saving checkpoints...")
         model_name = type(self).__name__ or "Reader"
@@ -57,7 +57,7 @@ class Model(object):
 
         # count parameters
         param_count = 0
-        for var in tf.global_variables():
+        for var in tf.compat.v1.global_variables():
             if (re.search('generator', var.name) != None):
                 shape = var.get_shape()
                 var_params = 1
@@ -69,16 +69,16 @@ class Model(object):
         # temporary
         if 0:
             select_vars = [
-                var for var in tf.global_variables()
+                var for var in tf.compat.v1.global_variables()
                 if (re.search("generator", var.name) != None)
             ]
 
             for var in select_vars:
                 print(var.name + '\n')
 
-            self.saver = tf.train.Saver(var_list=select_vars, max_to_keep=5)
+            self.saver = tf.compat.v1.train.Saver(var_list=select_vars, max_to_keep=5)
         else:
-            self.saver = tf.train.Saver(max_to_keep=5)
+            self.saver = tf.compat.v1.train.Saver(max_to_keep=5)
 
         print(" [*] Loading checkpoints...")
         if needed:

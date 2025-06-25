@@ -58,7 +58,7 @@ def tf_loss_with_select(tensor1, tensor2, which_loss="l2", b_normalize=False, we
         return tf.multiply(weight, loss)
 
 def tf_normalize_tensor(tensor):
-    tensor1d = tf.reshape(tensor, [tf.shape(tensor)[0], -1])
+    tensor1d = tf.reshape(tensor, [tf.shape(input=tensor)[0], -1])
     tensor = tf.nn.l2_normalize(tensor1d, axis=1)  # norm(each row) == 1
     return tensor
 
@@ -67,7 +67,7 @@ def loss_neg_cos(tensor1, tensor2):
     tensor1 = tf_normalize_tensor(tensor1)
     tensor2 = tf_normalize_tensor(tensor2)
     # To Do: reduce_sum except the 1st dim
-    return 1. - tf.reduce_sum(tf.multiply(tensor1, tensor2), axis=1)
+    return 1. - tf.reduce_sum(input_tensor=tf.multiply(tensor1, tensor2), axis=1)
 
 
 def loss_l1(tensor1, tensor2, b_normalize=False):
@@ -97,7 +97,7 @@ def loss_huber(labels, predictions, delta=1.0):
     condition = tf.less(residual, delta)
     small_res = 0.5 * tf.square(residual)
     large_res = delta * residual - 0.5 * tf.square(delta)
-    return tf.where(condition, small_res, large_res)
+    return tf.compat.v1.where(condition, small_res, large_res)
 
 
 """ neural network layers """
@@ -118,11 +118,11 @@ def maxpool(h, s=2, k=2):
 def global_pool(t_feat, op = 'max'):
     b, h, w, _ = t_feat.get_shape()
     if op == 'max':
-        return tf.nn.max_pool(t_feat, [1, h.value, w.value, 1], [1, 1, 1, 1], 'VALID')
+        return tf.nn.max_pool2d(input=t_feat, ksize=[1, h.value, w.value, 1], strides=[1, 1, 1, 1], padding='VALID')
     elif op == 'maxred':
-        return tf.reduce_max(t_feat, [1, 2], True)
+        return tf.reduce_max(input_tensor=t_feat, axis=[1, 2], keepdims=True)
     elif op == 'avg':
-        return tf.nn.avg_pool(t_feat, [1, h.value, w.value, 1], [1, 1, 1, 1], 'VALID')
+        return tf.nn.avg_pool2d(input=t_feat, ksize=[1, h.value, w.value, 1], strides=[1, 1, 1, 1], padding='VALID')
     else:
         raise ValueError('Unsupported operation %s' % op)
 
@@ -130,8 +130,8 @@ def global_pool(t_feat, op = 'max'):
 def conv_pad(h, n=64, s=1, k=3):
     padsz = k // 2
     h = tf.pad(
-        h,
-        tf.constant([[0, 0], [padsz, padsz], [padsz, padsz], [0, 0]]),
+        tensor=h,
+        paddings=tf.constant([[0, 0], [padsz, padsz], [padsz, padsz], [0, 0]]),
         mode='SYMMETRIC')
     h = tf.contrib.layers.convolution2d(
         h, n, kernel_size=k, stride=s, padding='VALID', activation_fn=None)
@@ -146,7 +146,7 @@ def conv_valid(h, n=64, s=1, k=3):
 def conv2d_weightnorm(h, n, k, s, gain=np.sqrt(2), use_wscale=False):
     w = get_weight([k, k, h.shape[-1].value, n], gain=gain, use_wscale=use_wscale)
     w = tf.cast(w, h.dtype)
-    return tf.nn.conv2d(h, w, strides=[1,s,s,1], padding='SAME')
+    return tf.nn.conv2d(input=h, filters=w, strides=[1,s,s,1], padding='SAME')
 
 def conv(h, n=64, s=1, k=3, w_initializer=None, w_normalization=True):
     if n == -1:
@@ -301,24 +301,24 @@ def lrelu(h, a=0.2):
 def selu(h):
     alpha = 1.6732632423543772848170429916717
     scale = 1.0507009873554804934193349852946
-    return scale * tf.where(h > 0.0, h, alpha * tf.exp(h) - alpha)
+    return scale * tf.compat.v1.where(h > 0.0, h, alpha * tf.exp(h) - alpha)
 
 
 def contribut_group_norm(x, groups=32):
     # normalize
     # tranpose: [bs, h, w, c] to [bs, c, h, w] following the paper
-    with tf.variable_scope('GroupNorm', reuse=False) as sc:
+    with tf.compat.v1.variable_scope('GroupNorm', reuse=False) as sc:
         # values=[x],
         eps = 1e-5
         G = groups
-        x = tf.transpose(x, [0, 3, 1, 2])
+        x = tf.transpose(a=x, perm=[0, 3, 1, 2])
         N, C, H, W = x.get_shape().as_list()
         G = min(G, C)
         x = tf.reshape(x, [-1, G, C // G, H, W])
         # counts, means_ss, variance_ss, _ = nn.sufficient_statistics(inputs, moments_axes, keep_dims=True)
         # mean, variance = nn.normalize_moments(counts, means_ss, variance_ss, shift=None)
-        mean, var = tf.nn.moments(x, [2, 3, 4], keep_dims=True)
-        x = (x - mean) * tf.rsqrt(var + eps)
+        mean, var = tf.nn.moments(x=x, axes=[2, 3, 4], keepdims=True)
+        x = (x - mean) * tf.math.rsqrt(var + eps)
         # per channel gamma and beta
         gamma = tf.Variable(
             tf.constant(1.0, shape=[C]), dtype=tf.float32, name='gamma')
@@ -329,7 +329,7 @@ def contribut_group_norm(x, groups=32):
 
         output = tf.reshape(x, [-1, C, H, W]) * gamma + beta
         # tranpose: [bs, c, h, w, c] to [bs, h, w, c] following the paper
-        output = tf.transpose(output, [0, 2, 3, 1])
+        output = tf.transpose(a=output, perm=[0, 2, 3, 1])
     return output
 
 
@@ -347,13 +347,13 @@ def batch_norm(h, is_training=True, scale=True):
 
 
 def inst_norm(h, name='inst_norm'):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         h = tf.contrib.layers.instance_norm(h)
     return h
 
 def pixel_norm(x, epsilon=1e-8):
-    with tf.variable_scope('PixelNorm'):
-        return x * tf.rsqrt(tf.reduce_mean(tf.square(x), axis=3, keepdims=True) + epsilon)
+    with tf.compat.v1.variable_scope('PixelNorm'):
+        return x * tf.math.rsqrt(tf.reduce_mean(input_tensor=tf.square(x), axis=3, keepdims=True) + epsilon)
 
 # def upsample(h):
 #     # dynamic shape version
@@ -365,7 +365,7 @@ def pixel_norm(x, epsilon=1e-8):
 # NEAREST_NEIGHBOR, BILINEAR
 def upsample(h, blinear=True, scale = 2):
     # static shape version
-    h = tf.image.resize_images(
+    h = tf.image.resize(
         h, [scale * h.get_shape()[1], scale * h.get_shape()[2]],
         method=tf.image.ResizeMethod.BILINEAR if blinear else tf.image.ResizeMethod.NEAREST_NEIGHBOR)
     # h = tf.image.resize_images(h, [2*tf.shape(h)[1], 2*tf.shape(h)[2]],
@@ -384,9 +384,9 @@ def NN(name, layers, output_layers = False):
     ilayer = 0
     h = layers[0]
     intermediate = []
-    with tf.variable_scope(name, reuse=False) as scope:
+    with tf.compat.v1.variable_scope(name, reuse=False) as scope:
         for layer in layers[1:]:
-            with tf.variable_scope('{}'.format(ilayer)):
+            with tf.compat.v1.variable_scope('{}'.format(ilayer)):
                 h = layer[0](h, *layer[1:])
                 intermediate.append(h)
             ilayer += 1
@@ -478,7 +478,7 @@ class Smoother(object):
     def make_gauss_var(self, name, size, sigma, c_i):
         with tf.device("/cpu:0"):
             kernel = self.gauss_kernel(size, sigma, c_i)
-            var = tf.Variable(tf.convert_to_tensor(kernel), name = name)
+            var = tf.Variable(tf.convert_to_tensor(value=kernel), name = name)
         return var
 
     def get_output(self):
@@ -493,9 +493,9 @@ class Smoother(object):
         # Get the number of channels in the input
         c_i = input.get_shape().as_list()[3]
         # Convolution for a given input and kernel
-        convolve = lambda i, k: tf.nn.depthwise_conv2d(i, k, [1, 1, 1, 1],
+        convolve = lambda i, k: tf.nn.depthwise_conv2d(input=i, filter=k, strides=[1, 1, 1, 1],
                                                              padding=padding)
-        with tf.variable_scope(name) as scope:
+        with tf.compat.v1.variable_scope(name) as scope:
             kernel = self.make_gauss_var('gauss_weight', self.filter_size,
                                                          self.sigma, c_i)
             output = convolve(input, kernel)

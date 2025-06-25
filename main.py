@@ -51,16 +51,16 @@ def main(_):
         os.makedirs(FLAGS.checkpoint_dir + '/val')
 
     NNModel = model_dict[FLAGS.model_type]
-    tf.set_random_seed(FLAGS.seed)
+    tf.compat.v1.set_random_seed(FLAGS.seed)
     np.random.seed(FLAGS.seed)
 
     # Set up tf session and initialize variables. 
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     config.allow_soft_placement=True      
     # config.log_device_placement=True
     
-    with tf.Session(config=config) as sess:
+    with tf.compat.v1.Session(config=config) as sess:
         for key, val in FLAGS.flag_values_dict().items():
             pp.pprint([key, getattr(FLAGS, key)])
 
@@ -74,4 +74,4 @@ def main(_):
             obj_model.test()
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()

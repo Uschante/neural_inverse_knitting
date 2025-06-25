@@ -121,7 +121,7 @@ class Loader(object):
         fake_dirs, real_dir, inst_dir = self.fake_dirs, self.real_dir, self.inst_dir
 
         # dataset creation
-        with tf.name_scope('dataset'):
+        with tf.compat.v1.name_scope('dataset'):
             synt, real, unsup = [TextLineDataset(name) for name in [synt_fname, real_fname, unsup_fname]]
 
             # @see https://www.tensorflow.org/api_docs/python/tf/contrib/data/shuffle_and_repeat
@@ -143,7 +143,7 @@ class Loader(object):
                 return fakes + [inst]
 
             synt_types = [tf.float32 for _ in self.fakes] + [tf.int32]
-            synt = synt.map(lambda name: tf.py_func(name2synt, [name], synt_types), num_parallel_calls = num_threads)
+            synt = synt.map(lambda name: tf.compat.v1.py_func(name2synt, [name], synt_types), num_parallel_calls = num_threads)
 
             # real data
             augment = self.params.get('augment', 1)
@@ -161,7 +161,7 @@ class Loader(object):
                 else:
                     real = read_image(os.path.join(real_dir, name.decode() + '.jpg'))
                 return real, inst
-            real = real.map(lambda name: tuple(tf.py_func(name2real, [name], [tf.float32, tf.int32])), num_parallel_calls = num_threads)
+            real = real.map(lambda name: tuple(tf.compat.v1.py_func(name2real, [name], [tf.float32, tf.int32])), num_parallel_calls = num_threads)
 
             # unsup data
             def name2unsup(name):
@@ -195,7 +195,7 @@ class Loader(object):
         num_real = count_lines(real_fname)
 
         # dataset creation
-        with tf.name_scope('dataset'):
+        with tf.compat.v1.name_scope('dataset'):
             real = TextLineDataset(real_fname)
 
             # @see https://www.tensorflow.org/api_docs/python/tf/contrib/data/shuffle_and_repeat
@@ -220,7 +220,7 @@ class Loader(object):
                 else:
                     real = read_image(os.path.join(real_dir, '160x160', 'gray', name.decode() + '.jpg'))
                 return real, inst, name.decode()
-            real = real.map(lambda name: tuple(tf.py_func(name2real, [name], [tf.float32, tf.int32, tf.string])), num_parallel_calls = num_threads)
+            real = real.map(lambda name: tuple(tf.compat.v1.py_func(name2real, [name], [tf.float32, tf.int32, tf.string])), num_parallel_calls = num_threads)
 
             #dataset = Dataset.zip((rend, xfer, real, inst_synt, inst_real))
             dataset = Dataset.zip({ 'real': real })
@@ -231,6 +231,6 @@ class Loader(object):
     def iter(self, set_option='train'):
         dataset = self.datasets[set_option]
         # create iterator
-        return dataset.make_one_shot_iterator()
+        return tf.compat.v1.data.make_one_shot_iterator(dataset)
         #return iterator.get_next()
 

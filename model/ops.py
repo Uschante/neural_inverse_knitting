@@ -18,13 +18,13 @@ def tf_lrelu(x, leak=0.2, name="lrelu"):
 
 def thoo_resz_img(t_img, scaling, target_img=None):
     if target_img != None:
-        imsz = tf.shape(target_img)[1:3]
+        imsz = tf.shape(input=target_img)[1:3]
     else:
-        imsz = tf.shape(t_img)
-        imsz = tf.to_int32(tf.to_float(imsz[1:3]) * scaling)
+        imsz = tf.shape(input=t_img)
+        imsz = tf.cast(tf.cast(imsz[1:3], dtype=tf.float32) * scaling, dtype=tf.int32)
 
     # ResizeMethod.BILINEAR,
-    t_output = tf.image.resize_images(
+    t_output = tf.image.resize(
         t_img, imsz, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
     return t_output
 
@@ -85,7 +85,7 @@ def testcode_laplacian():
         np.ones([48, 48], dtype=np.float32)
     ], 1)
 
-    t_input = tf.placeholder(tf.float32, shape=[None, None])
+    t_input = tf.compat.v1.placeholder(tf.float32, shape=[None, None])
 
     t_input4d = tf_fn_expdim2to4(t_input, 0, -1)
 
@@ -93,8 +93,8 @@ def testcode_laplacian():
 
     t_ori_img = laplacian_pyr_reconstruction(t_lst_Lpyr)
 
-    with tf.Session() as sess:
-        init = tf.global_variables_initializer()
+    with tf.compat.v1.Session() as sess:
+        init = tf.compat.v1.global_variables_initializer()
         sess.run(init)
 
         # exc_output = sess.run([t_lst_Lpyr[iscale] for iscale in range(len(t_lst_Lpyr))],
@@ -107,17 +107,17 @@ def testcode_laplacian():
 
 
 def instance_norm(input, name="instance_norm"):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         depth = input.get_shape()[3]
-        scale = tf.get_variable(
+        scale = tf.compat.v1.get_variable(
             "scale", [depth],
-            initializer=tf.random_normal_initializer(
+            initializer=tf.compat.v1.random_normal_initializer(
                 1.0, 0.02, dtype=tf.float32))
-        offset = tf.get_variable(
-            "offset", [depth], initializer=tf.constant_initializer(0.0))
-        mean, variance = tf.nn.moments(input, axes=[1, 2], keep_dims=True)
+        offset = tf.compat.v1.get_variable(
+            "offset", [depth], initializer=tf.compat.v1.constant_initializer(0.0))
+        mean, variance = tf.nn.moments(x=input, axes=[1, 2], keepdims=True)
         epsilon = 1e-5
-        inv = tf.rsqrt(variance + epsilon)
+        inv = tf.math.rsqrt(variance + epsilon)
         normalized = (input - mean) * inv
         return scale * normalized + offset
 
@@ -125,7 +125,7 @@ def instance_norm(input, name="instance_norm"):
 class batch_norm(object):
     # h1 = lrelu(tf.contrib.layers.batch_norm(conv2d(h0, self.df_dim*2, name='d_h1_conv'),decay=0.9,updates_collections=None,epsilon=0.00001,scale=True,scope="d_h1_conv"))
     def __init__(self, epsilon=1e-5, momentum=0.9, name="batch_norm"):
-        with tf.variable_scope(name):
+        with tf.compat.v1.variable_scope(name):
             self.epsilon = epsilon
             self.momentum = momentum
             self.name = name
@@ -141,18 +141,18 @@ class batch_norm(object):
 
 
 def disc_conv(batch_input, out_channels, stride):
-    with tf.variable_scope("conv"):
+    with tf.compat.v1.variable_scope("conv"):
         in_channels = batch_input.get_shape()[3]
-        filter = tf.get_variable(
+        filter = tf.compat.v1.get_variable(
             "filter", [4, 4, in_channels, out_channels],
             dtype=tf.float32,
-            initializer=tf.random_normal_initializer(0, 0.02))
+            initializer=tf.compat.v1.random_normal_initializer(0, 0.02))
         # [batch, in_height, in_width, in_channels], [filter_width, filter_height, in_channels, out_channels]
         #     => [batch, out_height, out_width, out_channels]
         padded_input = tf.pad(
-            batch_input, [[0, 0], [1, 1], [1, 1], [0, 0]], mode="CONSTANT")
+            tensor=batch_input, paddings=[[0, 0], [1, 1], [1, 1], [0, 0]], mode="CONSTANT")
         conv = tf.nn.conv2d(
-            padded_input, filter, [1, stride, stride, 1], padding="VALID")
+            input=padded_input, filters=filter, strides=[1, stride, stride, 1], padding="VALID")
         return conv
 
 
@@ -162,7 +162,7 @@ def disc_conv(batch_input, out_channels, stride):
 
 
 def fn_amp_aware_filtering(t_input, amp, name='Amplitude_aware_filtering'):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         blurkernel = tf.constant(
             np.array([[0.002969, 0.013306, 0.021938, 0.013306, 0.002969],
                       [0.013306, 0.059634, 0.09832, 0.059634, 0.013306],
@@ -197,15 +197,15 @@ def thoo_steer_conv_ch(input_,
                        d_w=1,
                        name="steer_conv2d"):
     p_stride = [1, d_h, d_w, 1]
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
 
         Rch, Gch, Bch = tf.split(input_, num_or_size_splits=3, axis=3)
 
-        w = tf.get_variable(
+        w = tf.compat.v1.get_variable(
             'weight', [k_h, k_w, 1, output_dim],
-            initializer=tf.contrib.layers.xavier_initializer_conv2d())
-        biases = tf.get_variable(
-            'biases', [output_dim], initializer=tf.constant_initializer(0.0))
+            initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
+        biases = tf.compat.v1.get_variable(
+            'biases', [output_dim], initializer=tf.compat.v1.constant_initializer(0.0))
 
         w_rot = [w]
         for i in range(3):
@@ -214,16 +214,16 @@ def thoo_steer_conv_ch(input_,
         # w_rot.append(tf.transpose(w, [1,0,2,3]))
 
         convR = tf.concat([tf.nn.bias_add(\
-             tf.nn.conv2d(Rch, w_i, strides=p_stride, padding='SAME') \
+             tf.nn.conv2d(input=Rch, filters=w_i, strides=p_stride, padding='SAME') \
              , biases) \
                 for w_i in w_rot], 3)
 
         convG = tf.concat([tf.nn.bias_add(\
-             tf.nn.conv2d(Gch, w_i, strides=p_stride, padding='SAME') \
+             tf.nn.conv2d(input=Gch, filters=w_i, strides=p_stride, padding='SAME') \
              , biases) \
                 for w_i in w_rot], 3)
         convB = tf.concat([tf.nn.bias_add(\
-             tf.nn.conv2d(Bch, w_i, strides=p_stride, padding='SAME') \
+             tf.nn.conv2d(input=Bch, filters=w_i, strides=p_stride, padding='SAME') \
              , biases) \
                 for w_i in w_rot], 3)
 
@@ -242,12 +242,12 @@ def thoo_steer_conv(input_,
                     d_w=1,
                     name="steer_conv2d"):
     p_stride = [1, d_h, d_w, 1]
-    with tf.variable_scope(name):
-        w = tf.get_variable(
+    with tf.compat.v1.variable_scope(name):
+        w = tf.compat.v1.get_variable(
             'weight', [k_h, k_w, input_.get_shape()[-1], output_dim],
-            initializer=tf.contrib.layers.xavier_initializer_conv2d())
-        biases = tf.get_variable(
-            'biases', [output_dim], initializer=tf.constant_initializer(0.0))
+            initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
+        biases = tf.compat.v1.get_variable(
+            'biases', [output_dim], initializer=tf.compat.v1.constant_initializer(0.0))
 
         w_rot = [w]
         for i in range(3):
@@ -256,7 +256,7 @@ def thoo_steer_conv(input_,
         # w_rot.append(tf.transpose(w, [1,0,2,3]))
 
         conv = tf.concat([tf.nn.bias_add(\
-             tf.nn.conv2d(input_, w_i, strides=p_stride, padding='SAME') \
+             tf.nn.conv2d(input=input_, filters=w_i, strides=p_stride, padding='SAME') \
              , biases) \
                 for w_i in w_rot], 3)
         # conv = tf.concat([tf.nn.conv2d(input_, w_i, strides=p_stride, padding='SAME') \
@@ -270,8 +270,8 @@ def thoo_depthwise_conv2d(t_input, filter_init):
     # filter_init: [filter_height, filter_width, in_channels, channel_multiplier]
 
     t_output = tf.nn.depthwise_conv2d(
-        t_input,
-        filter_init,
+        input=t_input,
+        filter=filter_init,
         strides=[1, 1, 1, 1],
         padding='SAME',
         name='dw_conv2d')
@@ -283,22 +283,22 @@ def testcode_thoo_depthwise_conv2d():
         np.zeros([5, 3], dtype=np.float32),
         np.ones([5, 3], dtype=np.float32)
     ], 1)
-    t_input = tf.placeholder(tf.float32, shape=[None, None])
+    t_input = tf.compat.v1.placeholder(tf.float32, shape=[None, None])
 
     t_input4d = tf_fn_expdim2to4(t_input, 0, -1)
 
     t_weight_dx = tf.constant([[0., 0., 0.], [0.5, 0., -0.5], [0., 0., 0.]],
                               tf.float32)
     t_weight_dy = tf.transpose(
-        tf.constant([[0., 0., 0.], [0.5, 0., -0.5], [0., 0., 0.]], tf.float32))
+        a=tf.constant([[0., 0., 0.], [0.5, 0., -0.5], [0., 0., 0.]], tf.float32))
     t_weight_dx = tf_fn_expdim2to4(t_weight_dx, -1, -1)
     t_weight_dy = tf_fn_expdim2to4(t_weight_dy, -1, -1)
 
     t_output_dx = thoo_depthwise_conv2d(t_input4d, t_weight_dx)
     t_output_dy = thoo_depthwise_conv2d(t_input4d, t_weight_dy)
 
-    with tf.Session() as sess:
-        init = tf.global_variables_initializer()
+    with tf.compat.v1.Session() as sess:
+        init = tf.compat.v1.global_variables_initializer()
         sess.run(init)
 
         exc_output_dx, exc_output_dy = sess.run([t_output_dx, t_output_dy],
@@ -321,17 +321,17 @@ def conv2d(input_,
            stddev=0.02,
            t_padding='SAME',
            name="conv2d"):
-    with tf.variable_scope(name):
-        w = tf.get_variable(
+    with tf.compat.v1.variable_scope(name):
+        w = tf.compat.v1.get_variable(
             'weight', [k_h, k_w, input_.get_shape()[-1], output_dim],
-            initializer=tf.contrib.layers.xavier_initializer_conv2d())
+            initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
         conv = tf.nn.conv2d(
-            input_, w, strides=[1, d_h, d_w, 1], padding='SAME')
+            input=input_, filters=w, strides=[1, d_h, d_w, 1], padding='SAME')
 
-        biases = tf.get_variable(
-            'biases', [output_dim], initializer=tf.constant_initializer(0.0))
+        biases = tf.compat.v1.get_variable(
+            'biases', [output_dim], initializer=tf.compat.v1.constant_initializer(0.0))
         # conv = tf.reshape(tf.nn.bias_add(conv, biases), conv.get_shape())
-        conv = tf.reshape(tf.nn.bias_add(conv, biases), tf.shape(conv))
+        conv = tf.reshape(tf.nn.bias_add(conv, biases), tf.shape(input=conv))
 
         return conv
 
@@ -345,12 +345,12 @@ def conv2d_nobias(input_,
                   stddev=0.02,
                   t_padding='SAME',
                   name="conv2d"):
-    with tf.variable_scope(name):
-        w = tf.get_variable(
+    with tf.compat.v1.variable_scope(name):
+        w = tf.compat.v1.get_variable(
             'weight', [k_h, k_w, input_.get_shape()[-1], output_dim],
-            initializer=tf.contrib.layers.xavier_initializer_conv2d())
+            initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
         conv = tf.nn.conv2d(
-            input_, w, strides=[1, d_h, d_w, 1], padding=t_padding)
+            input=input_, filters=w, strides=[1, d_h, d_w, 1], padding=t_padding)
         return conv
 
 
@@ -362,14 +362,14 @@ def convt2d(input_,
             d_w=2,
             stddev=0.02,
             name="convt2d"):
-    with tf.variable_scope(name):
-        w = tf.get_variable('weight', [k_h, k_w, input_.get_shape()[-1], output_dim], \
-         initializer=tf.truncated_normal_initializer(stddev=stddev))
+    with tf.compat.v1.variable_scope(name):
+        w = tf.compat.v1.get_variable('weight', [k_h, k_w, input_.get_shape()[-1], output_dim], \
+         initializer=tf.compat.v1.truncated_normal_initializer(stddev=stddev))
         conv = tf.nn.conv2d_transpose(
             input_, w, strides=[1, d_h, d_w, 1], padding='SAME')
 
-        biases = tf.get_variable(
-            'biases', [output_dim], initializer=tf.constant_initializer(0.0))
+        biases = tf.compat.v1.get_variable(
+            'biases', [output_dim], initializer=tf.compat.v1.constant_initializer(0.0))
         conv = tf.reshape(tf.nn.bias_add(conv, biases), conv.get_shape())
 
         return conv
@@ -383,8 +383,8 @@ def rgb2ntsc(rgb):
         [0.596, -0.274, -0.322],  # G
         [0.211, -0.523, 0.312],  # B
     ])
-    yiq_pixels = tf.matmul(srgb_pixels, tf.transpose(rgb_to_yiq))
-    return tf.reshape(yiq_pixels, tf.shape(rgb))
+    yiq_pixels = tf.matmul(srgb_pixels, tf.transpose(a=rgb_to_yiq))
+    return tf.reshape(yiq_pixels, tf.shape(input=rgb))
 
 
 def ntsc2rgb(yiq):
@@ -395,12 +395,12 @@ def ntsc2rgb(yiq):
         [1., -0.272, -0.647],  # G
         [1., -1.106, 1.703],  # B
     ])
-    rgb_pixels = tf.matmul(yiq_pixels, tf.transpose(yiq_to_rgb))
-    return tf.reshape(rgb_pixels, tf.shape(yiq))
+    rgb_pixels = tf.matmul(yiq_pixels, tf.transpose(a=yiq_to_rgb))
+    return tf.reshape(rgb_pixels, tf.shape(input=yiq))
 
 
 def preprocess_lab(lab):
-    with tf.name_scope("preprocess_lab"):
+    with tf.compat.v1.name_scope("preprocess_lab"):
         L_chan, a_chan, b_chan = tf.unstack(lab, axis=3)
         # L_chan: black and white with input range [0, 100]
         # a_chan/b_chan: color channels with input range ~[-110, 110], not exact
@@ -411,7 +411,7 @@ def preprocess_lab(lab):
 
 
 def deprocess_lab(lab):
-    with tf.name_scope("deprocess_lab"):
+    with tf.compat.v1.name_scope("deprocess_lab"):
         L_chan, a_chan, b_chan = tf.unstack(lab, axis=3)
         # this is axis=3 instead of axis=2 sbecause we process individual images but deprocess batches
         return tf.stack(
@@ -420,11 +420,11 @@ def deprocess_lab(lab):
 
 # based on https://github.com/torch/image/blob/9f65c30167b2048ecbe8b7befdc6b2d6d12baee9/generic/image.c
 def rgb_to_lab(srgb):
-    with tf.name_scope("rgb_to_lab"):
+    with tf.compat.v1.name_scope("rgb_to_lab"):
         srgb = check_image(srgb)
         srgb_pixels = tf.reshape(srgb, [-1, 3])
 
-        with tf.name_scope("srgb_to_xyz"):
+        with tf.compat.v1.name_scope("srgb_to_xyz"):
             linear_mask = tf.cast(srgb_pixels <= 0.04045, dtype=tf.float32)
             exponential_mask = tf.cast(srgb_pixels > 0.04045, dtype=tf.float32)
             rgb_pixels = (srgb_pixels / 12.92 * linear_mask) + ((
@@ -438,7 +438,7 @@ def rgb_to_lab(srgb):
             xyz_pixels = tf.matmul(rgb_pixels, rgb_to_xyz)
 
         # https://en.wikipedia.org/wiki/Lab_color_space#CIELAB-CIEXYZ_conversions
-        with tf.name_scope("xyz_to_cielab"):
+        with tf.compat.v1.name_scope("xyz_to_cielab"):
             # convert to fx = f(X/Xn), fy = f(Y/Yn), fz = f(Z/Zn)
 
             # normalize for D65 white point
@@ -464,16 +464,16 @@ def rgb_to_lab(srgb):
             lab_pixels = tf.matmul(fxfyfz_pixels, fxfyfz_to_lab) + tf.constant(
                 [-16.0, 0.0, 0.0])
 
-        return preprocess_lab(tf.reshape(lab_pixels, tf.shape(srgb)))
+        return preprocess_lab(tf.reshape(lab_pixels, tf.shape(input=srgb)))
 
 
 def lab_to_rgb(lab):
-    with tf.name_scope("lab_to_rgb"):
+    with tf.compat.v1.name_scope("lab_to_rgb"):
         lab = check_image(lab)
         lab_pixels = tf.reshape(deprocess_lab(lab), [-1, 3])
 
         # https://en.wikipedia.org/wiki/Lab_color_space#CIELAB-CIEXYZ_conversions
-        with tf.name_scope("cielab_to_xyz"):
+        with tf.compat.v1.name_scope("cielab_to_xyz"):
             # convert to fxfyfz
             lab_to_fxfyfz = tf.constant([
                 #   fx      fy        fz
@@ -496,7 +496,7 @@ def lab_to_rgb(lab):
             # denormalize for D65 white point
             xyz_pixels = tf.multiply(xyz_pixels, [0.950456, 1.0, 1.088754])
 
-        with tf.name_scope("xyz_to_srgb"):
+        with tf.compat.v1.name_scope("xyz_to_srgb"):
             xyz_to_rgb = tf.constant([
                 #     r           g          b
                 [3.2404542, -0.9692660, 0.0556434],  # x
@@ -512,12 +512,12 @@ def lab_to_rgb(lab):
             srgb_pixels = (rgb_pixels * 12.92 * linear_mask) + (
                 (rgb_pixels**(1 / 2.4) * 1.055) - 0.055) * exponential_mask
 
-        return tf.reshape(srgb_pixels, tf.shape(lab))
+        return tf.reshape(srgb_pixels, tf.shape(input=lab))
 
 
 def check_image(image):
-    assertion = tf.assert_equal(
-        tf.shape(image)[-1], 3, message="image must have 3 color channels")
+    assertion = tf.compat.v1.assert_equal(
+        tf.shape(input=image)[-1], 3, message="image must have 3 color channels")
     with tf.control_dependencies([assertion]):
         image = tf.identity(image)
 
@@ -545,15 +545,15 @@ def put_kernels_on_grid(kernel, grid_Y, grid_X, pad=1):
 		Tensor of shape [(Y+2*pad)*grid_Y, (X+2*pad)*grid_X, NumChannels, 1].
 	'''
 
-    x_min = tf.reduce_min(kernel)
-    x_max = tf.reduce_max(kernel)
+    x_min = tf.reduce_min(input_tensor=kernel)
+    x_max = tf.reduce_max(input_tensor=kernel)
 
     kernel1 = (kernel - x_min) / (x_max - x_min)
 
     # pad X and Y
     x1 = tf.pad(
-        kernel1,
-        tf.constant([[pad, pad], [pad, pad], [0, 0], [0, 0]]),
+        tensor=kernel1,
+        paddings=tf.constant([[pad, pad], [pad, pad], [0, 0], [0, 0]]),
         mode='CONSTANT')
 
     # X and Y dimensions, w.r.t. padding
@@ -563,21 +563,21 @@ def put_kernels_on_grid(kernel, grid_Y, grid_X, pad=1):
     channels = kernel1.get_shape()[2]
 
     # put NumKernels to the 1st dimension
-    x2 = tf.transpose(x1, (3, 0, 1, 2))
+    x2 = tf.transpose(a=x1, perm=(3, 0, 1, 2))
     # organize grid on Y axis
     x3 = tf.reshape(x2, [grid_X, Y * grid_Y, X, channels])  #3
 
     # switch X and Y axes
-    x4 = tf.transpose(x3, (0, 2, 1, 3))
+    x4 = tf.transpose(a=x3, perm=(0, 2, 1, 3))
     # organize grid on X axis
     x5 = tf.reshape(x4, [1, X * grid_X, Y * grid_Y, channels])  #3
 
     # back to normal order (not combining with the next step for clarity)
-    x6 = tf.transpose(x5, (2, 1, 3, 0))
+    x6 = tf.transpose(a=x5, perm=(2, 1, 3, 0))
 
     # to tf.image_summary order [batch_size, height, width, channels],
     #   where in this case batch_size == 1
-    x7 = tf.transpose(x6, (3, 0, 1, 2))
+    x7 = tf.transpose(a=x6, perm=(3, 0, 1, 2))
 
     # scale to [0, 255] and convert to uint8
     return tf.image.convert_image_dtype(x7, dtype=tf.uint8)
@@ -598,27 +598,27 @@ def put_activation_on_grid(activ, grid_Y, grid_X, name, pad=1):
 	'''
     activation_tensor = tf.slice(activ, [0, 0, 0, 0], [1, -1, -1, -1])
 
-    x_min = tf.reduce_min(activation_tensor)
-    x_max = tf.reduce_max(activation_tensor)
+    x_min = tf.reduce_min(input_tensor=activation_tensor)
+    x_max = tf.reduce_max(input_tensor=activation_tensor)
 
     activ1 = (activation_tensor - x_min) / (x_max - x_min)
 
     # pad X and Y
     x1 = tf.pad(
-        activ1,
-        tf.constant([[0, 0], [pad, pad], [pad, pad], [0, 0]]),
+        tensor=activ1,
+        paddings=tf.constant([[0, 0], [pad, pad], [pad, pad], [0, 0]]),
         mode='CONSTANT')
 
     # X and Y dimensions, w.r.t. padding
-    Y = tf.shape(activ1)[1] + 2 * pad
-    X = tf.shape(activ1)[2] + 2 * pad
+    Y = tf.shape(input=activ1)[1] + 2 * pad
+    X = tf.shape(input=activ1)[2] + 2 * pad
     channels = 1
 
     x2 = tf.reshape(x1, tf.stack([Y, X, grid_Y, grid_X]))
-    x3 = tf.transpose(x2, (2, 0, 3, 1))
+    x3 = tf.transpose(a=x2, perm=(2, 0, 3, 1))
     V = tf.reshape(x3, (1, grid_Y * Y, grid_X * X, 1))
 
     # scale to [0, 255] and convert to uint8
     Vq = tf.image.convert_image_dtype(V, dtype=tf.uint8)
 
-    return tf.summary.image(name, Vq, max_outputs=1)
+    return tf.compat.v1.summary.image(name, Vq, max_outputs=1)
