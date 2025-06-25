@@ -12,6 +12,7 @@ from .spatial_transformer import transformer
 from util import read_image, comp_confusionmat
 
 import tf_slim as slim
+import tensorflow_addons as tfa
 
 from .tensorflow_vgg import custom_vgg19
 
@@ -132,7 +133,7 @@ def oper_warping(t_texture,
     and outputs the warped image
     '''
     with tf.compat.v1.variable_scope(name, reuse=tf.compat.v1.AUTO_REUSE):
-        warped_image, flow_field = tf.contrib.image.sparse_image_warp(t_texture,
+        warped_image, flow_field = tfa.image.sparse_image_warp(t_texture,
             t_src_landmark_yx, t_dst_landmark_yx,
             interpolation_order = order,
             regularization_weight = regularization,
