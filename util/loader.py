@@ -1,19 +1,41 @@
 import os
+# read and write images as NumPy arrays 
+# (part of scikit-image)
 from skimage.io import imread, imsave
 import numpy as np
+# random sampling and shuffling utilities
+# from NumPy's Random Number Generator
 from numpy.random import choice, permutation
+# Computer-vision workhorse: image I/O, transforms,
+# drawing, video capture
 import cv2
+# small std-lib helper that rounds a float
+# up to the nearest integer
 from math import ceil
 
 import tensorflow as tf
+# TensorFlow (2?) input pipelines:
+# assemble, transform and batch data efficiently
 from tensorflow.data import Dataset, TextLineDataset
+# TF 1.x helper that shuffles a dataset buffer 
+# then repeats it (removed in TF 2; use dataset.shuffle(...).repeat())
 from tensorflow.contrib.data import shuffle_and_repeat
 
+# Convert epoch seconds to UTC time tuple and format it
+# as a human-readable string
 from time import gmtime, strftime
+# Geometric image warping;
+# define or apply affine/perspective transforms
 from skimage.transform import warp, AffineTransform
+# Fast Gaussian blut for denoising or scale-space
+# smoothing
 from skimage.filters import gaussian
+# Python's built-in interactive debugger
+# (pdb.set_trace() drops you into a REPL)
 import pdb
 
+# Lightweight image class: open, manipulate
+# and save PNG/JPEG/TIFF, etc.
 from PIL import Image
 
 def read_image(fname, expand = True, aug_scale = True):
@@ -48,7 +70,7 @@ def read_points(fname, from_matlab = True):
 
 def random_crop(img, points, params):
     '''
-    Warp an image using points for cropping.
+    Warp (деформировать) an image using points for cropping.
     Randomly perturb those points for augmentation.
 
     Input is HxW, output is 160x160
@@ -108,6 +130,11 @@ class Loader(object):
         self.datasets['test'] = self.test_pipeline(num_threads)
 
     def pipeline(self, name, num_threads):
+        """
+        Create the training/validation input pipeline
+
+        returns the assembled tf.data.Dataset
+        """
         if not self.params.get('training', 1):
             return None
         synt_fname = os.path.join(self.dataset_path, name + '_synt.txt')
@@ -128,6 +155,8 @@ class Loader(object):
             #synt.apply(shuffle_and_repeat(buffer_size = num_synt)) #, count = 1))
             #real.apply(shuffle_and_repeat(buffer_size = num_real)) #, count = ceil(ratio)))
 
+            # shuffle each list by its full length and 
+            # make them infinite via .repeat()
             synt = synt.shuffle(num_synt).repeat()
             real = real.shuffle(num_real).repeat()
             unsup = unsup.shuffle(num_unsup).repeat()
@@ -186,6 +215,9 @@ class Loader(object):
             return dataset
 
     def test_pipeline(self, num_threads):
+        """
+        build the test/inference dataset (real images only)
+        """
         real_fname = os.path.join(self.dataset_path, 'test_real.txt')
 
         # extract directories
@@ -229,6 +261,13 @@ class Loader(object):
             return dataset
 
     def iter(self, set_option='train'):
+        """
+        give an iterator for one of the prepared datasets
+
+        returns that iterator so caller code
+        can do next(loader.iter('train')) inside a 
+        session run
+        """
         dataset = self.datasets[set_option]
         # create iterator
         return tf.compat.v1.data.make_one_shot_iterator(dataset)
